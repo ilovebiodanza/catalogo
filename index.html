@@ -116,16 +116,19 @@
     // Asignar la posición left al elemento de destino
     elementoDestino.style.right = (posicionRight-ancho) + 'px';
     $("#myInput").on("keyup", function() {
-      const value = $(this).val().toLowerCase();
-      let contador=0;
+      const value = normalize($(this).val().toLowerCase());
+      let contador = 0;
       $("#myTable tr").filter(function() {
-        const exist = $(this).text().toLowerCase().indexOf(value) > -1;
-        $(this).toggle(exist);
-        if(exist) contador++;
+          const exist = normalize($(this).text().toLowerCase()).indexOf(value) > -1;
+          $(this).toggle(exist);
+          if (exist) contador++;
       });
       $("#contador").html(`Danzas: <strong>${contador}</strong>`);
     });
   });
+  function normalize(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
 </script>
 <div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
   <audio is="amo-biodanza-audio" analyst preload="none" id="audio-music" style="z-index: 9999;display: none;"></audio>
