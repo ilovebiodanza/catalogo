@@ -20,14 +20,26 @@
 <body>
 
 <div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4">Catálogo General de Biodanza</h1>
+  <div class="container" id="container">
+    <h1 class="display-4">Catálogo de Biodanza</h1>
     <p class="lead">Recopilación exhaustiva y detallada de todas las danzas en los repertorios de Biodanza, incluyendo IBF 2012, IBF 2018, Buenos Aires, Areco, Perú y otros más, junto con sus respectivas músicas. Herramienta esencial para el profesor de Biodanza, que proporciona una visión completa de las diferentes danzas y músicas que forman parte de esta disciplina. Cada entrada en el catálogo incluirá el título de la danza, una descripción y la música correspondiente, proporcionando así una guía completa para su práctica.</p>
   </div>
 </div>
 
 <div class="container">
-  <input class="form-control mb-3" id="myInput" type="text" placeholder="Escriba la palabra o frase que desea buscar">
+
+  <div class="toast" data-autohide="false" id="busqueda" style="position: fixed; top: 10px; z-index: 9999;">
+    <div class="toast-header">
+      <strong class="mr-auto text-primary">Buscar</strong>
+      <small class="text-muted" id="contador"></small>
+    </div>
+    <div class="toast-body">
+        <div class="form-group">
+      <input type="text" class="form-control" id="myInput" placeholder="Palabra o frase">
+    </div>
+    </div>
+  </div>
+
   <table class="table table-bordered table-striped">
     <tbody id="myTable"></tbody>
   </table>  
@@ -85,21 +97,35 @@
   };
 
   $(document).ready(function() {
-    mostrarDanzas();
+    mostrarDanzas().then(() => {
+      setTimeout(() => {
+        $('.toast').toast('show');
+      },0);
+    });
+    
+    // Selecciona el elemento del que quieres obtener el ancho
+    const elementoOrigen = document.getElementById('container');
+    // Selecciona el elemento al que quieres asignar el ancho
+    const elementoDestino = document.getElementById('busqueda');
+    // Obtiene el ancho del elemento origen
+    const ancho = elementoOrigen.offsetWidth;
+    // Asigna el ancho al elemento destino
+    elementoDestino.style.width = ancho + 'px';
+    // Obtener la posición left del elemento de origen
+    var posicionRight = elementoOrigen.getBoundingClientRect().right;
+    // Asignar la posición left al elemento de destino
+    elementoDestino.style.right = (posicionRight-ancho) + 'px';
     $("#myInput").on("keyup", function() {
       const value = $(this).val().toLowerCase();
+      let contador=0;
       $("#myTable tr").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        const exist = $(this).text().toLowerCase().indexOf(value) > -1;
+        $(this).toggle(exist);
+        if(exist) contador++;
       });
+      $("#contador").html(`Danzas: <strong>${contador}</strong>`);
     });
   });
-/*
-  const playMusic = (mp3, ogg) => {
-    const audio = document.getElementById("audio-music");
-    audio.src=mp3!==''?mp3:ogg;
-    audio.play();
-  }
-*/
 </script>
 <div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
   <audio is="amo-biodanza-audio" analyst preload="none" id="audio-music" style="z-index: 9999;display: none;"></audio>
