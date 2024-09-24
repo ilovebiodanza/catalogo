@@ -66,7 +66,7 @@
               <div class="list-group">
                 ${t.musics.map(({ code, title, author, line, mp3, ogg }) => 
                   `<a href="javascript:playMusic(${"`"+mp3+"`"},${"`"+ogg+"`"})" class="list-group-item list-group-item-action">
-                    <strong>${code}</strong> <span class="text-primary">${title}</span> <span class="text-danger">${author}</span> <i>${line}</i></a>`
+                    <strong>${code}</strong> <span class="text-primary">${title}</span> <span class="text-danger">${author}</span> <i>${line}</i></a><br>`
                 ).join('')}
               </div>
             </td>`;
