@@ -28,14 +28,15 @@
 
 <div class="container">
 
-  <div class="toast" data-autohide="false" id="busqueda" style="position: fixed; top: 10px; z-index: 9999;">
+  <div class="toast" data-autohide="false" id="busqueda" style="position: fixed; top: 10px; right:10px; z-index: 9999;">
     <div class="toast-header">
       <strong class="mr-auto text-primary">Buscar</strong>
-      <small class="text-muted" id="contador"></small>
+      <small class="text-muted"><span id="contador"></span> <span id="anterior" class="badge badge-light" disabled style="transform: scaleX(-1);cursor:pointer">❥</span>
+        <span id="siguiente" class="badge badge-light" disabled style="cursor:pointer">❥</span></small>
     </div>
     <div class="toast-body">
         <div class="form-group">
-      <input type="text" class="form-control" id="myInput" placeholder="Palabra o frase">
+      <input type="text" class="form-control" id="myInput" placeholder="Palabra o frase" autocomplete="off">
     </div>
     </div>
   </div>
@@ -96,39 +97,126 @@
     });
   };
 
+  let currentIndex = 0;
+  let filteredRows = [];
+  const minChars = 4;
+  let exist = false;
+
   $(document).ready(function() {
     mostrarDanzas().then(() => {
       setTimeout(() => {
         $('.toast').toast('show');
       },0);
     });
-    
-    // Selecciona el elemento del que quieres obtener el ancho
-    const elementoOrigen = document.getElementById('container');
-    // Selecciona el elemento al que quieres asignar el ancho
-    const elementoDestino = document.getElementById('busqueda');
-    // Obtiene el ancho del elemento origen
-    const ancho = elementoOrigen.offsetWidth;
-    // Asigna el ancho al elemento destino
-    elementoDestino.style.width = ancho + 'px';
-    // Obtener la posición left del elemento de origen
-    var posicionRight = elementoOrigen.getBoundingClientRect().right;
-    // Asignar la posición left al elemento de destino
-    elementoDestino.style.right = (posicionRight-ancho) + 'px';
+   
     $("#myInput").on("keyup", function() {
-      const value = normalize($(this).val().toLowerCase());
-      let contador = 0;
+      const value = $(this).val();
+
+      filteredRows = [];;
+      
       $("#myTable tr").filter(function() {
-          const exist = normalize($(this).text().toLowerCase()).indexOf(value) > -1;
-          $(this).toggle(exist);
-          if (exist) contador++;
+        const row = this;
+        // Limpiar resaltados anteriores
+        $(this).find('span.text-founded').each(function() {
+          $(this).replaceWith($(this).text());
+        });
+        const contenido = row.innerHTML;
+        row.innerHTML=contenido;
+
+        if (value.length >= minChars) {
+          if (exist=buscarYResaltarTexto(row, value)) {
+            filteredRows.push($(row));
+          }
+          $(row).toggle(exist);
+          return exist;
+        } else  {
+          filteredRows.push($(row));
+          $(row).toggle(true);
+          return exist;
+        }
       });
-      $("#contador").html(`Danzas: <strong>${contador}</strong>`);
+      currentIndex=0;
+      updateCounter();
+      updateButtons();
     });
+    $("#myInput").trigger("keyup");
   });
-  function normalize(str) {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  function updateCounter() {
+    const total = filteredRows.length;
+    $("#contador").html(`Danza: <strong>${currentIndex + 1}/${total}</strong>`);
   }
+
+  function updateButtons() {
+      const total = filteredRows.length;
+      $("#anterior").prop('disabled', currentIndex === 0);
+      $("#siguiente").prop('disabled', currentIndex >= total - 1);
+  }
+
+  $("#siguiente").on("click", function() {
+      if (currentIndex < filteredRows.length - 1) {
+          currentIndex++;
+          scrollToCurrent();
+      }
+  });
+
+  $("#anterior").on("click", function() {
+      if (currentIndex > 0) {
+          currentIndex--;
+          scrollToCurrent();
+      }
+  });
+
+  function scrollToCurrent() {
+      const row = filteredRows[currentIndex];
+      $('html, body').animate({
+          scrollTop: row.offset().top
+      }, 500);
+      updateCounter();
+      updateButtons();
+  }
+
+  function normalizarTexto(texto) {
+    // Convertir a minúsculas y eliminar acentos
+    return texto.toLowerCase()
+        .normalize('NFD') // Normaliza el texto para separar los caracteres acentuados
+        .replace(/[\u0300-\u036f]/g, ''); // Elimina los acentos
+  } 
+
+  function buscarYResaltarTexto(elemento, valorBuscado) {
+    const valorBuscadoNormalizado = normalizarTexto(valorBuscado);
+    let encontrado = false;
+
+    function resaltarTextoRecursivo(nodo) {
+        for (let i = 0; i < nodo.childNodes.length; i++) {
+            const hijo = nodo.childNodes[i];
+
+            if (hijo.nodeType === Node.TEXT_NODE) {
+                const textoOriginal = hijo.textContent;
+                const textoNormalizado = normalizarTexto(textoOriginal);
+
+                if (textoNormalizado.includes(valorBuscadoNormalizado)) {
+                    encontrado = true;
+                    const partes = textoOriginal.split(new RegExp(`(${valorBuscado})`, 'gi'));
+                    const nuevoContenido = partes.map((parte) => {
+                        return normalizarTexto(parte) === valorBuscadoNormalizado 
+                            ? `<span class="bg-warning text-founded">${parte}</span>` 
+                            : parte;
+                    }).join('');
+
+                    const contenedor = document.createElement('span');
+                    contenedor.innerHTML = nuevoContenido;
+                    nodo.replaceChild(contenedor, hijo);
+                }
+            } else if (hijo.nodeType === Node.ELEMENT_NODE) {
+                resaltarTextoRecursivo(hijo);
+            }
+        }
+    }
+    // console.log(elemento.ELEMENT_NODE);
+    resaltarTextoRecursivo(elemento);
+    return encontrado;
+  }
+
 </script>
 <div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
   <audio is="amo-biodanza-audio" analyst preload="none" id="audio-music" style="z-index: 9999;display: none;"></audio>
