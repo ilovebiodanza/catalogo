@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo General de Biodanza</title>
-  <link id="theme-css" rel="stylesheet" href="bootstrap.min.united.css"> <!-- Tema por defecto -->
+  <link id="tema" rel="stylesheet" href="bootstrap.min.cerulean.css"> <!-- Tema por defecto -->
   <script>
       function cargarTema() {
           const urlParams = new URLSearchParams(window.location.search);
-          const tema = urlParams.get('tema') || 'united'; // Tema por defecto si no se especifica
+          const tema = urlParams.get('tema') || 'cerulean'; // Tema por defecto si no se especifica
           const temasDisponibles = [
               'cerulean', 'ciborg', 'cosmo', 'darkly', 'flatly', 
               'journal', 'litera', 'lumen', 'lux', 'materia', 
@@ -18,7 +18,7 @@
           ];
 
           if (temasDisponibles.includes(tema)) {
-              document.getElementById('theme-css').href = `bootstrap.min.${tema}.css`;
+              document.getElementById('tema').href = `bootstrap.min.${tema}.css`;
           } else {
               console.warn('Tema no válido. Se cargará el tema por defecto.');
           }
