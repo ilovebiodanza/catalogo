@@ -220,7 +220,7 @@
 
                 if (textoNormalizado.includes(valorBuscadoNormalizado)) {
                     encontrado = true;
-                    const partes = textoOriginal.split(new RegExp(`(${valorBuscado})`, 'gi'));
+                    const partes = textoOriginal.split(new RegExp(`(${valorBuscado}|á|é|í|ó|ú)`, 'gi'));
                     const nuevoContenido = partes.map((parte) => {
                         return normalizarTexto(parte) === valorBuscadoNormalizado 
                             ? `<span class="bg-warning text-founded">${parte}</span>` 
