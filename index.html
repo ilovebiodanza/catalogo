@@ -41,7 +41,7 @@
     </div>
   </div>
 
-  <table class="table table-bordered table-striped">
+  <table class="table table-borderless">
     <tbody id="myTable"></tbody>
   </table>  
 </div>
@@ -81,14 +81,17 @@
 
           tr.innerHTML = `
             <td>
-              <h3 class="text-primary">${t.title}</h3>
-              <p>${t.description}</p>
-              <h5>Músicas</h5>
-              <div class="list-group">
-                ${t.musics.map(({ code, title, author, line, mp3, ogg }) => 
-                  `<a href="javascript:loadAndPlayMusic('audio-music',${'`'+mp3+'`'},${'`'+ogg+'`'},${'`'+code+'`'},${'`'+title+'`'},${'`'+author+'`'})" class="list-group-item list-group-item-action">
-                    <strong>${code}</strong> <span class="text-primary">${title}</span> <span class="text-danger">${author}</span> <i>${line}</i></a>`
-                ).join('')}
+              <div class="card">
+                <div class="card-header"><h3 class="text-primary">${t.title}</h3></div>
+                <div class="card-body">${t.description}</div> 
+                <div class="card-footer">
+                  <div class="list-group">
+                    ${t.musics.map(({ code, title, author, line, mp3, ogg }) => 
+                      `<a href="javascript:loadAndPlayMusic('audio-music',${'`'+mp3+'`'},${'`'+ogg+'`'},${'`'+code+'`'},${'`'+title+'`'},${'`'+author+'`'})" class="list-group-item list-group-item-action">
+                        <strong>${code}</strong> <span class="text-primary">${title}</span> <span class="text-danger">${author}</span> <i>${line}</i></a>`
+                    ).join('')}
+                  </div>
+                </div>
               </div>
             </td>`;
           myTable.appendChild(tr);
