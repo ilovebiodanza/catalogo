@@ -4,7 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catálogo General de Biodanza</title>
-  <link rel="stylesheet" href="bootstrap.min.cosmo.css" id="tema"> 
+  <link id="theme-css" rel="stylesheet" href="bootstrap.min.lux.css"> <!-- Tema por defecto -->
+  <script>
+      function cargarTema() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const tema = urlParams.get('tema') || 'lux'; // Tema por defecto si no se especifica
+          const temasDisponibles = [
+              'cerulean', 'ciborg', 'cosmo', 'darkly', 'flatly', 
+              'journal', 'litera', 'lumen', 'lux', 'materia', 
+              'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 
+              'slate', 'solar', 'spacelab', 'superhero', 'united', 
+              'yeti'
+          ];
+
+          if (temasDisponibles.includes(tema)) {
+              document.getElementById('theme-css').href = `bootstrap.min.${tema}.css`;
+          } else {
+              console.warn('Tema no válido. Se cargará el tema por defecto.');
+          }
+      }
+      window.onload = cargarTema;
+  </script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <link rel="stylesheet" href="https://ilovebiodanza.top/css/main.css">
