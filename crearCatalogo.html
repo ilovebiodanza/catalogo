@@ -33,7 +33,7 @@
   <div class="toast" data-autohide="false" id="busqueda" style="position: fixed; top: 10px; right:10px; z-index: 9999;">
     <div class="toast-header">
       <strong class="mr-auto text-primary">Buscar</strong>
-      <small class="p-2 text-muted" id="contador"></small>
+      <small class="p-2 text-muted badge badge-light" style="cursor:pointer" id="contador"></small>
       <span class="p-2 badge badge-light text-danger" id="anterior" disabled style="transform: scaleX(-1);cursor:pointer">❥</span>
       <span class="p-2 badge badge-light text-danger" id="siguiente" disabled style="cursor:pointer">❥</span>
     </div>
@@ -92,9 +92,9 @@
     });
     function updateCounter() {
       const total = filteredRows.length;
-      $("#contador").html(`Danza: <strong>${currentIndex + 1}/${total}</strong>`);
+      $("#contador").html(`Danza: <strong>${currentIndex + 1} / ${total}</strong>`);
     }
-  
+    
     function updateButtons() {
         const total = filteredRows.length;
         $("#anterior").prop('disabled', currentIndex === 0);
@@ -164,6 +164,22 @@
       // console.log(elemento.ELEMENT_NODE);
       resaltarTextoRecursivo(elemento);
       return encontrado;
+    }
+    document.getElementById('contador').addEventListener('click', actualizarContador);
+    function actualizarContador() {
+      const total = filteredRows.length;
+      if (total > 0)  {
+        const nuevoValor = prompt("Introduce un nuevo valor entre 1 y " + total + ":");
+        const valorNumerico = parseInt(nuevoValor);
+
+        // Validar que el nuevo valor esté entre 1 y total
+        if (!isNaN(valorNumerico) && valorNumerico >= 1 && valorNumerico <= total) {
+            currentIndex = valorNumerico - 1;
+            scrollToCurrent();
+        } else {
+            alert("Valor inválido. Debe estar entre 1 y " + total + ".");
+        }
+      }
     }
   </script>
   <script>
