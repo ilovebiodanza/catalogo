@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catálogo General de Biodanza</title>
+  <link id="tema" rel="stylesheet" href="bootstrap.min.cerulean.css"> <!-- Tema por defecto -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link rel="stylesheet" href="https://ilovebiodanza.top/css/main.css">
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/sonification.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <script src="https://ilovebiodanza.top/js/musicaDB.js"></script>
+  <script src="https://ilovebiodanza.top/js/util.js"></script>
+  <script>const language= "es";</script>
+  <script src="https://ilovebiodanza.top/js/lang.js"></script>
+</head>
+<body>
+    <div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
+        <audio is="amo-biodanza-audio" analyst preload="none" id="audio-music" style="z-index: 9999;display: none;"></audio>
+    </div>
+    
+    <div class="container" id="contenido">
+
+        <div class="toast" data-autohide="false" id="busqueda" style="position: fixed; top: 10px; right:10px; z-index: 9999;">
+            <div class="toast-header">
+              <strong class="mr-auto text-primary">Buscar</strong>
+              <small class="p-2 text-muted badge badge-light" style="cursor:pointer" id="contador"></small>
+              <span class="p-2 badge badge-light text-danger" id="anterior" disabled style="transform: scaleX(-1);cursor:pointer">❥</span>
+              <span class="p-2 badge badge-light text-danger" id="siguiente" disabled style="cursor:pointer">❥</span>
+            </div>
+            <div class="toast-body">
+                <div class="form-group">
+              <input type="text" class="form-control" id="myInput" placeholder="Palabra o frase" autocomplete="off">
+            </div>
+            </div>
+        </div>
+
+        <div class="jumbotron jumbotron-fluid">
+          <div class="container" id="container">
+            <h1 class="display-4">Catálogo de Biodanza</h1>
+            <p class="lead">Recopilación exhaustiva y detallada de todas las danzas en los repertorios de Biodanza, incluyendo IBF 2012, IBF 2018, Buenos Aires, Areco, Perú y otros más, junto con sus respectivas músicas. Herramienta esencial para el profesor de Biodanza, que proporciona una visión completa de las diferentes danzas y músicas que forman parte de esta disciplina. Cada entrada en el catálogo incluirá el título de la danza, una descripción y la música correspondiente, proporcionando así una guía completa para su práctica.</p>
+          </div>
+        </div>  
+
+        <table class="table table-borderless">
+            <tbody id="myTable"></tbody>
+        </table>
+
+        <script>
+            let currentIndex = 0;
+            let filteredRows = [];
+            let exist = false;
+            let resaltado = false;
+            const minChars = 1;
+          
+            $(document).ready(function() {
+             
+              $("#myInput").on("keyup", function() {
+                $('.card-body').addClass('d-none');
+                $('.card-footer').addClass('d-none');
+                $('.card-contenido').html('');
+
+                const value = $(this).val();
+          
+                filteredRows = [];;
+                
+                $("#myTable tr").filter(function() {
+                  const row = this;
+          
+                  if (resaltado) {
+                    $(this).find('span.text-founded').each(function() {
+                      $(this).replaceWith($(this).text());
+                    });
+                  }
+                  const contenido = row.innerHTML;
+                  row.innerHTML=contenido;
+          
+                  if (value.length >= minChars) {
+                    if (exist=buscarYResaltarTexto(row, value)) {
+                      filteredRows.push($(row));
+                    }
+                    $(row).toggle(exist);
+                    return exist;
+                  } else  {
+                    if(value.length === 0)  filteredRows.push($(row));
+                    $(row).toggle(true);
+                    return exist;
+                  }
+                });
+                currentIndex=0;
+                updateCounter();
+                updateButtons();
+              });
+              $("#myInput").trigger("keyup");
+            });
+            function updateCounter() {
+              const total = filteredRows.length;
+              $("#contador").html(`Danza: <strong>${currentIndex + 1} / ${total}</strong>`);
+            }
+            
+            function updateButtons() {
+                const total = filteredRows.length;
+                $("#anterior").prop('disabled', currentIndex === 0);
+                $("#siguiente").prop('disabled', currentIndex >= total - 1);
+            }
+          
+            $("#siguiente").on("click", function() {
+                if (currentIndex < filteredRows.length - 1) {
+                    currentIndex++;
+                    scrollToCurrent();
+                }
+            });
+          
+            $("#anterior").on("click", function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    scrollToCurrent();
+                }
+            });
+          
+            function scrollToCurrent() {
+                const row = filteredRows[currentIndex];
+                $('html, body').animate({
+                    scrollTop: row.offset().top
+                }, 500);
+                updateCounter();
+                updateButtons();
+            }
+          
+            function normalizarTexto(texto) {
+              // Convertir a minúsculas y eliminar acentos
+              return texto.toLowerCase()
+                  .normalize('NFD') // Normaliza el texto para separar los caracteres acentuados
+                  .replace(/[\u0300-\u036f]/g, ''); // Elimina los acentos
+            } 
+          
+            function buscarYResaltarTexto(elemento, valorBuscado) {
+              const valorBuscadoNormalizado = normalizarTexto(valorBuscado);
+              let encontrado = false;
+          
+              function resaltarTextoRecursivo(nodo) {
+                  for (let i = 0; i < nodo.childNodes.length; i++) {
+                      const hijo = nodo.childNodes[i];
+          
+                      if (hijo.nodeType === Node.TEXT_NODE) {
+                          const textoOriginal = hijo.textContent;
+                          const textoNormalizado = normalizarTexto(textoOriginal);
+          
+                          if (textoNormalizado.includes(valorBuscadoNormalizado)) {
+                              encontrado = true; resaltado = true;
+                              const partes = textoOriginal.split(new RegExp(`(${valorBuscado}|á|é|í|ó|ú)`, 'gi'));
+                              const nuevoContenido = partes.map((parte) => {
+                                  return normalizarTexto(parte) === valorBuscadoNormalizado 
+                                      ? `<span class="bg-warning text-founded">${parte}</span>` 
+                                      : parte;
+                              }).join('');
+          
+                              const contenedor = document.createElement('span');
+                              contenedor.innerHTML = nuevoContenido;
+                              nodo.replaceChild(contenedor, hijo);
+                          }
+                      } else if (hijo.nodeType === Node.ELEMENT_NODE) {
+                          resaltarTextoRecursivo(hijo);
+                      }
+                  }
+              }
+              // console.log(elemento.ELEMENT_NODE);
+              resaltarTextoRecursivo(elemento);
+              return encontrado;
+            }
+            document.getElementById('contador').addEventListener('click', actualizarContador);
+            function actualizarContador() {
+              const total = filteredRows.length;
+              if (total > 0)  {
+                const nuevoValor = prompt("Introduce un nuevo valor entre 1 y " + total + ":");
+                const valorNumerico = parseInt(nuevoValor);
+        
+                // Validar que el nuevo valor esté entre 1 y total
+                if (!isNaN(valorNumerico) && valorNumerico >= 1 && valorNumerico <= total) {
+                    currentIndex = valorNumerico - 1;
+                    scrollToCurrent();
+                } else {
+                    alert("Valor inválido. Debe estar entre 1 y " + total + ".");
+                }
+              }
+            }
+        </script>
+        
+
+
+    </div>
+      
+
+    <script src="https://ilovebiodanza.top/js/element.music-analyst.js"></script>
+    <script src='https://ilovebiodanza.top/js/miAudio.js'></script>
+    <script src='https://ilovebiodanza.top/js/audio.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <div id="new-translation" style="display:none">Reemplazar las traducciones vacías con las correspondientes en cada idioma : traduccion = {</div>
+    <script>
+        function cargarTema() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tema = urlParams.get('tema') || 'cerulean'; // Tema por defecto si no se especifica
+            const temasDisponibles = [
+                'cerulean', 'ciborg', 'cosmo', 'darkly', 'flatly', 
+                'journal', 'litera', 'lumen', 'lux', 'materia', 
+                'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 
+                'slate', 'solar', 'spacelab', 'superhero', 'united', 
+                'yeti'
+            ];
+        
+            if (temasDisponibles.includes(tema)) {
+                document.getElementById('tema').href = `bootstrap.min.${tema}.css`;
+            } else {
+                console.warn('Tema no válido. Se cargará el tema por defecto.');
+            }
+        }
+        window.onload = cargarTema;
+    </script>
+    <script>
+        async function cargarDatos(jsonFile) {
+            try {
+            const response = await fetch(jsonFile);
+            if (!response.ok) throw new Error('Error en la red');
+            return await response.json();
+            } catch (error) {
+            console.error('Hubo un problema con la solicitud Fetch:', error);
+            }
+        }
+
+        let titles, musics;
+
+        const mostrarIndice = async () => {
+            titles = await cargarDatos('Title.json');
+            musics = await cargarDatos('Music.json');
+            const myTable = document.getElementById('myTable');
+
+            titles.sort((a, b) => {
+                return a.type.localeCompare(b.type) || a.title.localeCompare(b.title);
+            });
+
+            titles.forEach((t, index) => {
+                if (t.type === 'Dance') {
+                    const tr = document.createElement('tr');
+                    if (t.musics) {
+                    t.musics.forEach((m, i) => {
+                        const propuestoPor = titles.find(title => title._id === m.ccre);
+                        const resultado = musics.find(music => music._id === m.id);
+                        if (resultado) {
+                            resultado.propusedBy = propuestoPor.title;
+                            t.musics[i] = resultado; // Actualiza la música con el resultado encontrado
+                        }
+                    });
+
+                    t.musics.sort((a, b) => (a.propusedBy+a.code).localeCompare(b.propusedBy+b.code));
+
+                    tr.innerHTML = `
+                        <td>
+                        <div class="card">
+                            <div class="card-header" onclick="mostrarDanza(${index})"><h3 class="text-primary">${t.title}</h3></div>
+                            <div class="card-body d-none card-contenido" id="description-${index}"></div>
+                            <div class="card-footer d-none">
+                                <div class="list-group card-contenido" id="musics-${index}">
+                                </div>
+                            </div>
+                        </div>
+                        </td>`;
+                    myTable.appendChild(tr);
+                        
+                    }
+                }
+            });
+        };
+
+        mostrarIndice();
+        $('.toast').toast('show');
+
+        function mostrarDanza(index)    {
+            if ($(`#description-${index}`).hasClass('d-none'))  {
+                $(`#description-${index}`).removeClass('d-none');    
+                $(`#description-${index}`).html(titles[index].description);
+                $(`#musics-${index}`).parent().removeClass('d-none');
+                $(`#musics-${index}`).html(titles[index].musics.map(({ code, title, author, line, mp3, ogg, propusedBy }) => 
+                        `<a href="javascript:loadAndPlayMusic('audio-music',${'`'+mp3+'`'},${'`'+ogg+'`'},${'`'+code+'`'},${'`'+title+'`'},${'`'+author+'`'})" class="list-group-item list-group-item-action"><strong>${code}</strong> <span class="text-primary">${title}</span> <span class="text-danger">${author}</span> <i>${line}</i> <sub><small class="small lang">(${propusedBy})</small></sub></a>
+                        `
+                ).join(''));
+            } else  {
+                $(`#description-${index}`).addClass('d-none');
+                $(`#description-${index}`).html('');
+                $(`#musics-${index}`).parent().addClass('d-none');
+                $(`#musics-${index}`).html('');
+            }
+        }
+        
+    </script>
+  
+</body>
+</html>
