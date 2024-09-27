@@ -262,8 +262,8 @@
                             <div class="card-header" style="cursor:pointer" onclick="mostrarDanza(${index})">
                                 <div class="d-flex">
                                     <div class="p-2 mr-auto text-primary">${t.title}</div>
-                                    <div class="p-2 ${t.description.length>15 ? '' : 'd-none'}"><span class="badge badge-success" title="Description available"><i class="bi bi-list"></i></span></div>
-                                    <div class="p-2 ${t.musics.length>0 ? '' : 'd-none'}"><span class="badge badge-danger" title="Music available"><i class="bi bi-music-note"></i></span></div>
+                                    <div class="p-2"><span class="badge badge-${t.description.length>15 ? 'success' : 'danger'}" title="Description available"><i class="bi bi-list"></i></span></div>
+                                    <div class="p-2"><span class="badge badge-${t.musics.length>0 ? 'success' : 'danger'}" title="Music available"><i class="bi bi-music-note"></i></span></div>
                                 </div>                                
                             </div>
                             <div class="card-body d-none card-contenido" id="description-${index}"></div>
