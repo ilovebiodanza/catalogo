@@ -252,7 +252,7 @@
                             if (resultado) {
                                 fuentes.add(propuestoPor.title+'|'+propuestoPor.shortTitle);
                                 resultado.propusedBy = propuestoPor.title+'|'+propuestoPor.shortTitle;
-                                t.musics[i] = resultado; // Actualiza la música con el resultado encontrado
+                                t.musics[i] = JSON.parse(JSON.stringify(resultado)); // Actualiza la música con el resultado encontrado
                             }
                         });
 
