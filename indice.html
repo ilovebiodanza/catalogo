@@ -245,36 +245,41 @@
                 if (t.type === 'Dance') {
                     const tr = document.createElement('tr');
                     if (t.musics) {
-                    t.musics.forEach((m, i) => {
-                        const propuestoPor = titles.find(title => title._id === m.ccre);
-                        const resultado = musics.find(music => music._id === m.id);
-                        if (resultado) {
-                            resultado.propusedBy = propuestoPor.title;
-                            t.musics[i] = resultado; // Actualiza la música con el resultado encontrado
-                        }
-                    });
+                        const fuentes = new Set();
+                        t.musics.forEach((m, i) => {
+                            const propuestoPor = titles.find(title => title._id === m.ccre);
+                            const resultado = musics.find(music => music._id === m.id);
+                            if (resultado) {
+                                fuentes.add(propuestoPor.title+'|'+propuestoPor.shortTitle);
+                                resultado.propusedBy = propuestoPor.title+'|'+propuestoPor.shortTitle;
+                                t.musics[i] = resultado; // Actualiza la música con el resultado encontrado
+                            }
+                        });
 
-                    t.musics.sort((a, b) => (a.propusedBy+a.code).localeCompare(b.propusedBy+b.code));
+                        t.musics.sort((a, b) => (a.propusedBy+a.code).localeCompare(b.propusedBy+b.code));
 
-                    tr.innerHTML = `
-                        <td class="p-1">
-                        <div class="card">
-                            <div class="card-header" style="cursor:pointer" onclick="mostrarDanza(${index})">
-                                <div class="d-flex">
-                                    <div class="p-2 mr-auto text-primary">${t.title}</div>
-                                    <div class="p-2"><span class="badge badge-${t.description.length>15 ? 'success' : 'danger'}" title="Description available"><i class="bi bi-list"></i></span></div>
-                                    <div class="p-2"><span class="badge badge-${t.musics.length>0 ? 'success' : 'danger'}" title="Music available"><i class="bi bi-music-note"></i></span></div>
-                                </div>                                
-                            </div>
-                            <div class="card-body d-none card-contenido" id="description-${index}"></div>
-                            <div class="card-footer d-none">
-                                <div class="list-group card-contenido" id="musics-${index}">
+                        tr.innerHTML = `
+                            <td class="p-1">
+                            <div class="card">
+                                <div class="card-header" style="cursor:pointer" onclick="mostrarDanza(${index})">
+                                    <div class="d-flex">
+                                        <div class="p-2 mr-auto text-primary">${t.title} ${Array.from(fuentes).map((fuente) => {
+                                            const shortTitle = '_'+fuente.split('|').pop();
+                                            const title = fuente.split('|')[0];
+                                            return `<sub class="badge badge-info" title="${title}">${shortTitle}</sub>`;
+                                        }  ).join(' ')}</div>
+                                        <div class="p-2"><span class="badge badge-${t.description.length>15 ? 'success' : 'danger'}" title="Description available"><i class="bi bi-list"></i></span></div>
+                                        <div class="p-2"><span class="badge badge-${t.musics.length>0 ? 'success' : 'danger'}" title="Music available"><i class="bi bi-music-note"></i></span></div>
+                                    </div>                                
+                                </div>
+                                <div class="card-body d-none card-contenido" id="description-${index}"></div>
+                                <div class="card-footer d-none">
+                                    <div class="list-group card-contenido" id="musics-${index}">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        </td>`;
-                    myTable.appendChild(tr);
-                        
+                            </td>`;
+                        myTable.appendChild(tr);                        
                     }
                 }
             });
@@ -288,10 +293,11 @@
                 $(`#description-${index}`).removeClass('d-none');    
                 $(`#description-${index}`).html(titles[index].description);
                 $(`#musics-${index}`).parent().removeClass('d-none');
-                $(`#musics-${index}`).html(titles[index].musics.map(({ code, title, author, line, mp3, ogg, propusedBy }) => 
-                        `<a href="javascript:loadAndPlayMusic('audio-music',${'`'+mp3+'`'},${'`'+ogg+'`'},${'`'+code+'`'},${'`'+title+'`'},${'`'+author+'`'})" class="list-group-item list-group-item-action"><strong>${code}</strong> <span class="text-primary">${title}</span> <span class="text-danger">${author}</span> <i>${line}</i> <sub><small class="small lang">(${propusedBy})</small></sub></a>
-                        `
-                ).join(''));
+                $(`#musics-${index}`).html(titles[index].musics.map(({ code, title, author, line, mp3, ogg, propusedBy }) => {
+                    const propused = propusedBy.split('|')[0];
+                    const shortTitle = propusedBy.split('|').pop();
+                    return `<a href="javascript:loadAndPlayMusic('audio-music',${'`'+mp3+'`'},${'`'+ogg+'`'},${'`'+code+'`'},${'`'+title+'`'},${'`'+author+'`'})" class="list-group-item list-group-item-action"><strong>${code}</strong> <span class="text-primary">${title}</span> <span class="text-danger">${author}</span> <i>${line}</i> <sub><small class="small lang" title="${propused}">(${shortTitle})</small></sub></a>`
+                }).join(''));
             } else  {
                 $(`#description-${index}`).addClass('d-none');
                 $(`#description-${index}`).html('');
