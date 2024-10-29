@@ -233,8 +233,8 @@
         let titles, musics;
 
         const mostrarIndice = async () => {
-            titles = await cargarDatos('Title.json');
-            musics = await cargarDatos('Music.json');
+            titles = await cargarDatos('json/Title.json');
+            musics = await cargarDatos('json/Music.json');
             const myTable = document.getElementById('myTable');
 
             titles.sort((a, b) => {
