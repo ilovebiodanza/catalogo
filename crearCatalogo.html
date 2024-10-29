@@ -287,8 +287,8 @@
   }
 
   const mostrarDanzas = async () => {
-    const titles = await cargarDatos('Title.json');
-    const musics = await cargarDatos('Music.json');
+    const titles = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Title.json');
+    const musics = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Music.json');
     const myTable = document.getElementById('myTable');
 
     titles.sort((a, b) => {
