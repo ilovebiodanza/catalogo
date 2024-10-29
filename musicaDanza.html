@@ -98,8 +98,8 @@
         }
 
         const mostrarIndice = async () => {
-            titles = await cargarDatos('https://ilovebiodanza.github.io/catalogo/Title.json');
-            const musics = await cargarDatos('https://ilovebiodanza.github.io/catalogo/Music.json');
+            titles = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Title.json');
+            const musics = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Music.json');
             titles.forEach((t) => {
                 t.musics.forEach((m) => {
                     const music = musics.find(music => music._id === m.id);
