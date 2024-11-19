@@ -47,6 +47,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th></th>
                     <th onclick="sortTable('m.code')">Código</th>
                     <th onclick="sortTable('m.title')">Título</th>
                     <th onclick="sortTable('m.author')">Autor</th>
@@ -80,8 +81,29 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="musicModal" tabindex="-1" role="dialog" aria-labelledby="musicModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="musicModalLabel">Detalles de la Musica</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="musicModalBody">
+                    <!-- Los detalles del danzo se insertarán aquí -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let titles;
+        let musics;
         let musicDances = [];
         let currentPage = 1;
         const limit = 30;
@@ -99,12 +121,12 @@
 
         const mostrarIndice = async () => {
             titles = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Title.json');
-            const musics = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Music.json');
+            musics = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Music.json');
             titles.forEach((t) => {
                 t.musics.forEach((m) => {
                     const music = musics.find(music => music._id === m.id);
                     if (music) musicDances.push({
-                        m: { id: music._id, code: music.code, title: music.title, author: music.author, line: music.line, mp3: music.mp3, ogg: music.ogg },
+                        m: { id: music._id, code: music.code, title: music.title, author: music.author, line: music.line, mp3: music.mp3, ogg: music.ogg, wd: music.description !== '' },
                         d: { id: t._id, title: t.title }
                     });
                 });
@@ -154,7 +176,8 @@
             const paginatedData = getPage(searchedValue, limit, currentPage);
             paginatedData.forEach(item => {
                 const row = `<tr>
-                    <td class="text-primary danzo" nowrap onclick="loadAndPlayMusic('audio-music',${'`'+item.m.mp3+'`'},${'`'+item.m.ogg+'`'},${'`'+item.m.code+'`'},${'`'+item.m.title+'`'},${'`'+item.m.author+'`'})"">${item.m.code}</td>
+                    <td><button class="btn btn-success btn-sm" onclick="loadAndPlayMusic('audio-music',${'`'+item.m.mp3+'`'},${'`'+item.m.ogg+'`'},${'`'+item.m.code+'`'},${'`'+item.m.title+'`'},${'`'+item.m.author+'`'})"><i class="bi bi-music-note-beamed"></i></button></td>
+                    <td nowrap${item.m.wd?` class="text-primary danzo" onclick="showMusicDetails('${item.m.id}')"`:''}>${item.m.code}</td>
                     <td>${item.m.title}</td>
                     <td>${item.m.author}</td>
                     <td class="text-primary danzo" onclick="showDanceDetails('${item.d.id}')">${item.d.title}</td>
@@ -255,6 +278,16 @@
             $('#danceModal').modal('show'); // Mostrar el modal
         };
 
+        const showMusicDetails = (id) => {
+            const modalBody = document.getElementById('musicModalBody');
+            const music = musics.find(music => music._id === id);
+
+            modalBody.innerHTML = `
+                <p><strong>Music:</strong> ${music.title} - ${music.author}</p>
+                <p><strong>Descripción:</strong> ${music.description}</p>
+            `;
+            $('#musicModal').modal('show'); // Mostrar el modal
+        };
 
         mostrarIndice();
     </script>
