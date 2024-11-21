@@ -45117,6 +45117,7 @@
     "shortTitle": "ML",
     "description": "<p style=\"font-size: 12.25px;\"><span style=\"font-weight: bolder;\">Objetivo o propósito</span>&nbsp;El objetivo de esta danza es explorar el movimiento de manera lenta y consciente, permitiendo a los danzantes conectarse con su cuerpo y su respiración. Se busca crear un ambiente sereno donde cada participante pueda disfrutar del momento presente.</p><p style=\"font-size: 12.25px;\"><span style=\"font-weight: bolder;\">Elementos clave</span>&nbsp;Los elementos clave incluyen movimientos suaves y lentos, la conexión con la música relajante y la expresión de calma. A través de esta danza, los danzantes son guiados a disfrutar de su cuerpo y a celebrar la tranquilidad.</p><p style=\"font-size: 12.25px;\"><span style=\"font-weight: bolder;\">Beneficios para los participantes</span>&nbsp;Los danzantes experimentan una sensación de paz y bienestar, lo que les permite liberar tensiones y conectarse con su esencia. Este proceso no solo promueve la tranquilidad, sino que también fomenta un sentido de comunidad y apoyo entre los participantes.</p><p style=\"font-size: 12.25px;\"><span style=\"font-weight: bolder;\">Consigna propuesta</span>&nbsp;Deja que cada movimiento lento te ancle en el presente. Conéctate con tus compañeros y celebremos juntos la magia, donde cada paso es un acto de serenidad y cada giro, una invitación a la conexión.</p>",
     "author": "UNKNOW",
+    "user": "",
     "musics": [
       {
         "id": "668ad52cf316096c0d6e6752",
@@ -45135,9 +45136,8 @@
         "ccre": "66aa8f7ac936bf81be2db76e"
       }
     ],
-    "deleted": false,
-    "user": "",
     "createdAt": "2024-10-20T13:45:28.495Z",
-    "updatedAt": "2024-11-20T22:56:35.865Z"
+    "updatedAt": "2024-11-20T22:56:35.865Z",
+    "deleted": false
   }
 ]
