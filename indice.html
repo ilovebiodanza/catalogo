@@ -319,6 +319,7 @@
             if (fechaEncriptada) {
                 // Desencriptar la fecha
                 const fechaDesencriptada = new Date(desencriptar(fechaEncriptada));
+                console.log(`ff ${fechaDesencriptada}`);
                 // Función para verificar si la fecha actual supera la fecha desencriptada
                 function verificarFecha() {
                     const fechaActual = new Date();
