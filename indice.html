@@ -307,6 +307,31 @@
         }
         
     </script>
+          document.addEventListener('DOMContentLoaded', function() {
+            // Función para desencriptar un texto en Base64
+            function desencriptar(texto) {
+                return atob(texto); // Utiliza Base64 para desencriptar
+            }
+            // Obtener los parámetros de la URL
+            const params = new URLSearchParams(window.location.search);
+            const fechaEncriptada = params.get('ff');
+            if (fechaEncriptada) {
+                // Desencriptar la fecha
+                const fechaDesencriptada = new Date(desencriptar(fechaEncriptada));
+                // Comparar con la fecha actual
+                const fechaActual = new Date();
+                if (fechaActual > fechaDesencriptada) {
+                    // Si la fecha actual supera la fecha recibida, cerrar la página
+                    alert("La fecha y hora actual superan la fecha y hora recibida. Cerrando la página.");
+                    window.close(); // Cierra la ventana
+                } else {
+                    console.log(`Fecha y hora recibida: ${fechaDesencriptada}`);
+                }
+            } else {
+                console.log(`No se recibió`);
+                // window.close(); // Cierra la ventana
+            }
+        });
   
 </body>
 </html>
