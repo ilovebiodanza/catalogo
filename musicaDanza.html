@@ -60,6 +60,10 @@
                 <!-- Los datos se insertarán aquí -->
             </tbody>
         </table>
+        <div class="invisible">
+            <hr>
+            <button type="button" class="btn btn-primary">Copy to clipboard</button>
+        </div>
     </div>
 
     <!-- Modal -->
@@ -109,6 +113,7 @@
         let currentPage = 1;
         const limit = 30;
         let sortOrder = 'asc'; // Orden por defecto
+        let filteredMusicDances = [];
 
         async function cargarDatos(jsonFile) {
             try {
@@ -159,14 +164,53 @@
                 (!isCheckedFilter || item.checked) && 
                 regTerms.every(term => fullfield(item).toLowerCase().match(term))
             );
-/*
-            const filteredData = musicDances.filter(item => 
-                regTerms.every(term => fullfield(item).toLowerCase().match(term))
-            );
-*/
             const startIndex = limit * (page - 1);
+
+            // Si el filtro está activado, generar un arreglo con los campos específicos
+            if (isCheckedFilter) {
+                filteredMusicDances = filteredData.map(item => ({
+                    m: {
+                        id: item.m.id,
+                        code: item.m.code,
+                        title: item.m.title,
+                        author: item.m.author,
+                        line: item.m.line
+                    },
+                    d: {
+                        id: item.d.id,
+                        title: item.d.title
+                    }
+                }));
+                document.querySelector('.invisible').classList.remove('invisible');
+            } else {
+                filteredMusicDances = []; // Limpiar la variable si el filtro no está activo
+                document.querySelector('.invisible').classList.add('invisible');
+            }
+
             return filteredData.slice(startIndex, startIndex + limit);
         };
+
+        // Función para copiar al portapapeles
+        const copyToClipboard = () => {
+            // Títulos de las columnas
+            const headers = "ID Música\tCódigo\tTítulo\tAutor\tLínea\tID Danza\tTítulo Danza";
+            
+            const textToCopy = filteredMusicDances.map(item => 
+                `${item.m.id}\t${item.m.code}\t${item.m.title}\t${item.m.author}\t${item.m.line}\t${item.d.id}\t${item.d.title}`
+            ).join('\n');
+
+            // Combinar encabezados y datos
+            const fullText = `${headers}\n${textToCopy}`;
+
+            navigator.clipboard.writeText(fullText).then(() => {
+                alert('Las danzas y músicas seleccionadas han sido copiadas al portapapeles.');
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+            });
+        };
+
+        // Agregar el evento al botón
+        document.querySelector('.btn-primary').addEventListener('click', copyToClipboard);
 
         // Función para cambiar el estado de los checkboxes
         const changeChecked = (danceId, musicId, isChecked) => {
