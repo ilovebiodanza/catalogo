@@ -53,6 +53,7 @@
                     <th onclick="sortTable('m.author')">Autor</th>
                     <th onclick="sortTable('d.title')">Danza</th>
                     <th onclick="sortTable('m.line')">Línea</th>
+                    <th class="align-top"><input id="filterChecked" type="checkbox" class="form-check-input"></th>
                 </tr>
             </thead>
             <tbody id="dataTable">
@@ -127,7 +128,8 @@
                     const music = musics.find(music => music._id === m.id);
                     if (music) musicDances.push({
                         m: { id: music._id, code: music.code, title: music.title, author: music.author, line: music.line, mp3: music.mp3, ogg: music.ogg, wd: music.description !== '' },
-                        d: { id: t._id, title: t.title }
+                        d: { id: t._id, title: t.title },
+                        checked: false
                     });
                 });
             });
@@ -151,14 +153,30 @@
             const regTerms = searchTerms.map(regExpSearchValue);
             const fullfield = (item) => `${item.m.code} ${item.m.title} ${item.m.author} ${item.m.line} ${item.d.title}`;
 
+            const isCheckedFilter = document.getElementById('filterChecked').checked;
+
+            const filteredData = musicDances.filter(item => 
+                (!isCheckedFilter || item.checked) && 
+                regTerms.every(term => fullfield(item).toLowerCase().match(term))
+            );
+/*
             const filteredData = musicDances.filter(item => 
                 regTerms.every(term => fullfield(item).toLowerCase().match(term))
             );
-
+*/
             const startIndex = limit * (page - 1);
             return filteredData.slice(startIndex, startIndex + limit);
         };
 
+        // Función para cambiar el estado de los checkboxes
+        const changeChecked = (danceId, musicId, isChecked) => {
+            const item = musicDances.find(i => i.d.id === danceId && i.m.id === musicId);
+            if (item) {
+                item.checked = isChecked; // Actualizar el estado checked
+                renderTable(document.getElementById('searchInput').value); // Renderizar la tabla nuevamente
+                renderPagination(); // Renderizar la paginación
+            }
+        };
 
         const shortLine = (line)   =>   {
             let newLine = line.replace("Afectividad", "AF");
@@ -182,6 +200,7 @@
                     <td>${item.m.author}</td>
                     <td class="text-primary danzo" onclick="showDanceDetails('${item.d.id}')">${item.d.title}</td>
                     <td nowrap>${shortLine(item.m.line)}</td>
+                    <td class="text-right"><input type="checkbox" class="form-check-input" onclick="changeChecked('${item.d.id}','${item.m.id}',this.checked)" ${item.checked?'checked':''}></td>
                 </tr>`;
                 dataTable.innerHTML += row;
             });
@@ -290,6 +309,17 @@
         };
 
         mostrarIndice();
+
+        // Función para manejar el cambio del checkbox en el encabezado
+        document.getElementById('filterChecked').addEventListener('change', function() {
+            // Limpiar el input de búsqueda
+            document.getElementById('searchInput').value = '';
+            // Ejecutar getPage con los nuevos parámetros
+            currentPage=1;
+            renderTable();
+            renderPagination();
+        });
+
     </script>
         <script src="https://ilovebiodanza.top/js/element.music-analyst.js"></script>
         <script src='https://ilovebiodanza.top/js/miAudio.js'></script>
@@ -298,7 +328,7 @@
         <!-- Bootstrap JS y dependencias -->
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script>
+        <script>            
             function cargarTema() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const tema = urlParams.get('tema') || 'cerulean'; // Tema por defecto si no se especifica
@@ -348,6 +378,7 @@
                 // window.close(); // Cierra la ventana
             }
         });
+
     </script>        
 </body>
 </html>
