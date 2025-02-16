@@ -60,7 +60,7 @@
                 <!-- Los datos se insertarán aquí -->
             </tbody>
         </table>
-        <div class="invisible">
+        <div class="invisible" id="clickboard">
             <hr>
             <button type="button" class="btn btn-primary">Copy to clipboard</button>
         </div>
@@ -133,7 +133,7 @@
                     const music = musics.find(music => music._id === m.id);
                     if (music) musicDances.push({
                         m: { id: music._id, code: music.code, title: music.title, author: music.author, line: music.line, mp3: music.mp3, ogg: music.ogg, wd: music.description !== '' },
-                        d: { id: t._id, title: t.title },
+                        d: { id: t._id, title: t.title, dance:t.musics[0].d },
                         checked: false
                     });
                 });
@@ -177,14 +177,14 @@
                         line: item.m.line
                     },
                     d: {
-                        id: item.d.id,
+                        id: item.d.dance,
                         title: item.d.title
                     }
                 }));
-                document.querySelector('.invisible').classList.remove('invisible');
+                document.querySelector('#clickboard').classList.remove('invisible');
             } else {
                 filteredMusicDances = []; // Limpiar la variable si el filtro no está activo
-                document.querySelector('.invisible').classList.add('invisible');
+                document.querySelector('#clickboard').classList.add('invisible');
             }
 
             return filteredData.slice(startIndex, startIndex + limit);
