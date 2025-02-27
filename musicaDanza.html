@@ -401,6 +401,7 @@
             // Obtener los parámetros de la URL
             const params = new URLSearchParams(window.location.search);
             const fechaEncriptada = params.get('ff');
+            console.log({fechaEncriptada});
             if (fechaEncriptada) {
                 // Desencriptar la fecha
                 const fechaDesencriptada = new Date(desencriptar(fechaEncriptada));
