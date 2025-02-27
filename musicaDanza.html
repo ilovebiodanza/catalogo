@@ -29,7 +29,7 @@
         }
     </style>
 </head>
-<body>
+<body id="mb">
     <div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
         <audio is="amo-biodanza-audio" analyst preload="none" id="audio-music" style="z-index: 9999;display: none;"></audio>
     </div>
@@ -106,7 +106,7 @@
         </div>
     </div>
 
-    <script>
+    <script id="ms">
         let titles;
         let musics;
         let musicDances = [];
@@ -391,8 +391,6 @@
                 }
             }
             window.onload = cargarTema;
-        </script>
-    <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Función para desencriptar un texto en Base64
             function desencriptar(texto) {
@@ -420,6 +418,7 @@
                 setInterval(verificarFecha, 300000); // Cada 5 minutos
             } else {
                 console.log(`No se recibió fecha.`);
+                document.getElementById('ms').innerHTML="";
                 window.close(); // Cierra la ventana
             }
         });
