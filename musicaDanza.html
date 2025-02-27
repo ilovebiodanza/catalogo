@@ -408,6 +408,7 @@
                 function verificarFecha() {
                     const fechaActual = new Date();
                     if (fechaActual > fechaDesencriptada) {
+                        document.getElementById('mb').innerHTML="";
                         window.close(); // Cierra la ventana
                     } else {
                         console.log("La fecha actual no ha superado la fecha recibida.");
@@ -419,7 +420,6 @@
             } else {
                 console.log(`No se recibió fecha.`);
                 document.getElementById('mb').innerHTML="";
-                window.close(); // Cierra la ventana
             }
         });
 
