@@ -193,7 +193,7 @@
         // Función para copiar al portapapeles
         const copyToClipboard = () => {
             // Títulos de las columnas
-            const headers = "ID Música\tCódigo\tTítulo\tAutor\tLínea\tID Danza\tTítulo Danza";
+            const headers = "ID Musica\tCodigo\tTitulo\tAutor\tLinea\tID Danza\tTitulo Danza";
             
             const textToCopy = filteredMusicDances.map(item => 
                 `${item.m.id}\t${item.m.code}\t${item.m.title}\t${item.m.author}\t${item.m.line}\t${item.d.id}\t${item.d.title}`
