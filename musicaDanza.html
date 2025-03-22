@@ -221,7 +221,7 @@ const mostrarIndice = async () => {
         });
     });
 
-    musicDances.sort((a, b) => a.m.title.localeCompare(b.m.title));
+    musicDances.sort((a, b) => a.d.title.localeCompare(b.d.title));
     renderTable();
     renderPagination();
 };
