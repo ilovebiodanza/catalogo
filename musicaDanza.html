@@ -107,7 +107,7 @@
     </div>
 
     <script id="ms">
-        let titles;
+/*        let titles;
         let musics;
         let musicDances = [];
         let currentPage = 1;
@@ -145,7 +145,88 @@
             renderTable();
             renderPagination();
         };
+*/
+let titles = [];
+let musics = {};
+let musicDances = [];
+let currentPage = 1;
+const limit = 30;
+let sortOrder = 'asc'; // Orden por defecto
+let filteredMusicDances = [];
 
+async function cargarDatos(jsonFile) {
+    try {
+        const response = await fetch(jsonFile);
+        if (!response.ok) throw new Error('Error en la red');
+        return await response.json();
+    } catch (error) {
+        console.error('Hubo un problema con la solicitud Fetch:', error);
+    }
+}
+
+async function cargarYProcesarDatos(baseUrl, tipo, procesarDatos) {
+    let part = 1;
+    let morePartsAvailable = true;
+
+    while (morePartsAvailable) {
+        const url = `${baseUrl}${tipo}_part${part}.json`;
+        const data = await cargarDatos(url);
+
+        if (!data || data.length === 0) {
+            morePartsAvailable = false; // Salir del ciclo si no hay más partes
+        } else {
+            procesarDatos(data); // Procesar los datos cargados
+            part++; // Incrementar el número de parte para la siguiente iteración
+        }
+    }
+}
+
+const procesarTitles = (data) => {
+    titles = [...titles, ...data]; // Combinar títulos
+};
+
+const procesarMusics = (data) => {
+    data.forEach(music => {
+        musics[music._id] = music; // Almacenar música por ID
+    });
+};
+
+const mostrarIndice = async () => {
+    // Cargar y procesar títulos
+    await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/json/', 'Title', procesarTitles);
+
+    // Cargar y procesar músicas
+    await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/json/', 'Music', procesarMusics);
+
+    // Procesar los títulos y las músicas
+    titles.forEach(({ _id, title, musics: titleMusics }) => {
+        titleMusics.forEach(({ id, d }) => {
+            const music = musics[id];
+            if (music) {
+                musicDances.push({
+                    m: { 
+                        id: music._id, 
+                        code: music.code, 
+                        title: music.title, 
+                        author: music.author, 
+                        line: music.line, 
+                        mp3: music.mp3, 
+                        ogg: music.ogg, 
+                        wd: music.description !== '' 
+                    },
+                    d: { id: _id, title, dance: d },
+                    checked: false
+                });
+            }
+        });
+    });
+
+    musicDances.sort((a, b) => a.m.title.localeCompare(b.m.title));
+    renderTable();
+    renderPagination();
+};
+
+        
         const regExpSearchValue = (searchValue) => {
             let regex = searchValue
                 .replace(/[aá]/gi, '[aá]')
