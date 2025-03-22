@@ -220,6 +220,7 @@
         window.onload = cargarTema;
     </script>
     <script>
+      /*
         async function cargarDatos(jsonFile) {
             try {
             const response = await fetch(jsonFile);
@@ -287,7 +288,105 @@
                 }
             });
         };
+*/
 
+async function cargarDatos(jsonFile) {
+    try {
+        const response = await fetch(jsonFile);
+        if (!response.ok) throw new Error('Error en la red');
+        return await response.json();
+    } catch (error) {
+        console.error('Hubo un problema con la solicitud Fetch:', error);
+    }
+}
+
+let titles = [];
+let musics = [];
+
+async function cargarYProcesarDatos(baseUrl, tipo, procesarDatos) {
+    let part = 1;
+    let morePartsAvailable = true;
+
+    while (morePartsAvailable) {
+        const url = `${baseUrl}${tipo}_part${part}.json`;
+        const data = await cargarDatos(url);
+
+        if (!data || data.length === 0) {
+            morePartsAvailable = false; // Salir del ciclo si no hay más partes
+        } else {
+            procesarDatos(data); // Procesar los datos cargados
+            part++; // Incrementar el número de parte para la siguiente iteración
+        }
+    }
+}
+
+const procesarTitles = (data) => {
+    titles = [...titles, ...data]; // Combinar títulos
+};
+
+const procesarMusics = (data) => {
+    musics = [...musics, ...data]; // Combinar músicas
+};
+
+const mostrarIndice = async () => {
+    // Cargar y procesar títulos
+    await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/json/', 'Title', procesarTitles);
+
+    // Cargar y procesar músicas
+    await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/json/', 'Music', procesarMusics);
+
+    const myTable = document.getElementById('myTable');
+
+    // Ordenar títulos
+    titles.sort((a, b) => {
+        return a.type.localeCompare(b.type) || a.title.localeCompare(b.title);
+    });
+
+    titles.forEach((t, index) => {
+        if (t.type === 'Dance') {
+            const tr = document.createElement('tr');
+            if (t.musics) {
+                const fuentes = new Set();
+                t.musics.forEach((m, i) => {
+                    const propuestoPor = titles.find(title => title._id === m.ccre);
+                    const resultado = musics.find(music => music._id === m.id);
+                    if (resultado) {
+                        fuentes.add(propuestoPor.title + '|' + propuestoPor.shortTitle);
+                        resultado.propusedBy = propuestoPor.title + '|' + propuestoPor.shortTitle;
+                        t.musics[i] = JSON.parse(JSON.stringify(resultado)); // Actualiza la música con el resultado encontrado
+                    }
+                });
+
+                t.musics.sort((a, b) => (a.propusedBy + a.code).localeCompare(b.propusedBy + b.code));
+
+                tr.innerHTML = `
+                    <td class="p-1">
+                    <div class="card">
+                        <div class="card-header" style="cursor:pointer" onclick="mostrarDanza(${index})">
+                            <div class="d-flex">
+                                <div class="p-2 mr-auto text-primary">${t.title} ${Array.from(fuentes).map((fuente) => {
+                                    const shortTitle = '_' + fuente.split('|').pop();
+                                    const title = fuente.split('|')[0];
+                                    return `<sub class="badge badge-info" title="${title}">${shortTitle}</sub>`;
+                                }).join(' ')}</div>
+                                <div class="p-2"><span class="badge badge-${t.description.length > 15 ? 'success' : 'danger'}" title="Description available"><i class="bi bi-list"></i></span></div>
+                                <div class="p-2"><span class="badge badge-${t.musics.length > 0 ? 'success' : 'danger'}" title="Music available"><i class="bi bi-music-note"></i></span></div>
+                            </div>                                
+                        </div>
+                        <div class="card-body d-none card-contenido" id="description-${index}"></div>
+                        <div class="card-footer d-none">
+                            <div class="list-group card-contenido" id="musics-${index}">
+                            </div>
+                        </div>
+                    </div>
+                    </td>`;
+                myTable.appendChild(tr);                        
+            }
+        }
+    });
+};
+
+      
         mostrarIndice();
         $('.toast').toast('show');
 
