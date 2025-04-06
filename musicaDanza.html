@@ -229,7 +229,7 @@ const mostrarIndice = async () => {
                 document.querySelector('#clickboard').classList.add('invisible');
             }
 
-            dataRandom = filteredData; // Data para la musica Random
+            dataRandom = eliminarMusicasDuplicadas(filteredData); // Data para la musica Random
             playedMusic = []; // Musica escuchada;
             randomMonitor.textContent=`${playedMusic.length} / ${dataRandom.length}`
 
@@ -503,6 +503,21 @@ const mostrarIndice = async () => {
             // Cuando la música termine de reproducirse, llama a la función nuevamente
             setTimeout(() => audioElement.onended = playRandomMusic, 2000);
         }
+        // Función para eliminar elementos duplicados
+        function eliminarMusicasDuplicadas(musicList) {
+            const uniqueMusic = [];
+            const seenCodes = new Set();
+        
+            for (const music of musicList) {
+                if (!seenCodes.has(music.m.code)) {
+                    uniqueMusic.push(music);
+                    seenCodes.add(music.m.code);
+                }
+            }
+        
+            return uniqueMusic;
+        }
+
     </script>   
 </body>
 </html>
