@@ -506,12 +506,12 @@ const mostrarIndice = async () => {
         // Función para eliminar elementos duplicados
         function eliminarMusicasDuplicadas(musicList) {
             const uniqueMusic = [];
-            const seenCodes = new Set();
+            const seenMusic = new Set();
         
             for (const music of musicList) {
-                if (!seenCodes.has(music.m.code)) {
+                if (!seenMusic.has(music.m.title+music.m.author)) {
                     uniqueMusic.push(music);
-                    seenCodes.add(music.m.code);
+                    seenMusic.add(music.m.title+music.m.author);
                 }
             }
         
