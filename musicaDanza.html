@@ -36,9 +36,19 @@
 
     <div class="container mt-5">
         <h1 class="text-center">Música y Danza</h1>
+        <!--
         <div class="mb-3">
             <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
         </div>
+        -->
+
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+            <div class="input-group-append">
+              <button class="btn btn-success" type="button" onclick="playRandomMusic()"><i class="bi bi-shuffle"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span class="badge badge-light" id="random-monitor"></span></button>  
+             </div>
+          </div>
+
         <nav aria-label="Page navigation">
             <ul class="pagination" id="pagination">
                 <!-- Los botones de paginación se insertarán aquí -->
@@ -107,45 +117,6 @@
     </div>
 
     <script id="ms">
-/*        let titles;
-        let musics;
-        let musicDances = [];
-        let currentPage = 1;
-        const limit = 30;
-        let sortOrder = 'asc'; // Orden por defecto
-        let filteredMusicDances = [];
-
-        async function cargarDatos(jsonFile) {
-            try {
-                const response = await fetch(jsonFile);
-                if (!response.ok) throw new Error('Error en la red');
-                return await response.json();
-            } catch (error) {
-                console.error('Hubo un problema con la solicitud Fetch:', error);
-            }
-        }
-
-        const mostrarIndice = async () => {
-            titles = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Title_part1.json');
-            const musics1 = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Music_part1.json');
-            const musics2 = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Music_part2.json');
-            const musics3 = await cargarDatos('https://ilovebiodanza.github.io/catalogo/json/Music_part3.json');
-            musics = [...musics1, ...musics2, ...musics3];
-            titles.forEach((t) => {
-                t.musics.forEach((m) => {
-                    const music = musics.find(music => music._id === m.id);
-                    if (music) musicDances.push({
-                        m: { id: music._id, code: music.code, title: music.title, author: music.author, line: music.line, mp3: music.mp3, ogg: music.ogg, wd: music.description !== '' },
-                        d: { id: t._id, title: t.title, dance:t.musics[0].d },
-                        checked: false
-                    });
-                });
-            });
-            musicDances.sort((a, b) => a.m.title.localeCompare(b.m.title));
-            renderTable();
-            renderPagination();
-        };
-*/
 let titles = [];
 let musics = [];
 let musicDances = [];
@@ -153,6 +124,7 @@ let currentPage = 1;
 const limit = 30;
 let sortOrder = 'asc'; // Orden por defecto
 let filteredMusicDances = [];
+let dataRandom =[];
 
 async function cargarDatos(jsonFile) {
     try {
@@ -256,6 +228,10 @@ const mostrarIndice = async () => {
                 filteredMusicDances = []; // Limpiar la variable si el filtro no está activo
                 document.querySelector('#clickboard').classList.add('invisible');
             }
+
+            dataRandom = filteredData; // Data para la musica Random
+            playedMusic = []; // Musica escuchada;
+            randomMonitor.textContent=`${playedMusic.length} / ${dataRandom.length}`
 
             return filteredData.slice(startIndex, startIndex + limit);
         };
@@ -462,6 +438,7 @@ const mostrarIndice = async () => {
             }
             window.onload = cargarTema;
         document.addEventListener('DOMContentLoaded', function() {
+            
             // Función para desencriptar un texto en Base64
             function desencriptar(texto) {
                 return atob(texto); // Utiliza Base64 para desencriptar
@@ -491,8 +468,41 @@ const mostrarIndice = async () => {
                 document.getElementById('mb').innerHTML="";
                 window.location.href = "https://ilovebiodanza.top";
             }
+                
         });
+    
+        // Elemento de audio
+        const audioElement = document.getElementById('audio-music');
+        const randomMonitor = document.getElementById('random-monitor');
 
-    </script>        
+        // Array para llevar un registro de las músicas reproducidas
+        let playedMusic = [];
+
+        // Función para reproducir música aleatoria
+        function playRandomMusic() {
+            if (playedMusic.length === dataRandom.length) {
+                alert('Todas las canciones han sido reproducidas.');
+                return; // Termina si todas las canciones han sido reproducidas
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * dataRandom.length);
+            } while (playedMusic.includes(randomIndex));
+
+            // Agrega la música seleccionada al array de reproducidas
+            playedMusic.push(randomIndex);
+            randomMonitor.textContent=`${playedMusic.length} / ${dataRandom.length}`;
+
+            // Reproduce la música
+            const item = dataRandom[randomIndex];
+            // audioElement.src = selectedMusic.url;
+            loadAndPlayMusic('audio-music',item.m.mp3,item.m.ogg,item.m.code,item.m.title,item.m.author);
+            //audioElement.play();
+
+            // Cuando la música termine de reproducirse, llama a la función nuevamente
+            setTimeout(() => audioElement.onended = playRandomMusic, 2000);
+        }
+    </script>   
 </body>
 </html>
