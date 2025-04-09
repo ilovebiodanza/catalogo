@@ -179,7 +179,7 @@ const mostrarIndice = async () => {
             });
         });
     });
-    // Primero, ordenamos el arreglo por el campo 'code'
+    // Primero, ordenamos el arreglo por el campo 'code e _id'
     musicDances.sort((a, b) => (a.m.code+a.d._id).localeCompare(b.m.code+b.d._id));
     
     // Luego, filtramos para eliminar duplicados
@@ -187,7 +187,7 @@ const mostrarIndice = async () => {
         index === 0 || (item.m.code+item.d._id) !== (self[index - 1].m.code+self[index - 1].d._id)
     );
     
-    musicDances.sort((a, b) => a.m.title.localeCompare(b.m.title));
+    musicDances.sort((a, b) => a.d.title.localeCompare(b.d.title));
     renderTable();
     renderPagination();
 };
