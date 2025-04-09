@@ -179,6 +179,7 @@ const mostrarIndice = async () => {
             });
         });
     });
+    console.log('Antes de la reducción', musicDances.length);
     // Primero, ordenamos el arreglo por el campo 'code e _id'
     musicDances.sort((a, b) => (a.m.code+a.d._id).localeCompare(b.m.code+b.d._id));
     
@@ -186,6 +187,7 @@ const mostrarIndice = async () => {
     musicDances = musicDances.filter((item, index, self) =>
         index === 0 || (item.m.code+item.d._id) !== (self[index - 1].m.code+self[index - 1].d._id)
     );
+    console.log('Despues de la reducción', musicDances.length);
     
     musicDances.sort((a, b) => (a.d.title+a.m.title+a.m.author).localeCompare(b.d.title+b.m.title+b.m.author) );
     renderTable();
