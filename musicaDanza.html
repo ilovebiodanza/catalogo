@@ -179,6 +179,14 @@ const mostrarIndice = async () => {
             });
         });
     });
+    // Primero, ordenamos el arreglo por el campo 'code'
+    musicDances.sort((a, b) => (a.m.code+a.d._id).localeCompare(b.m.code+b.d._id));
+    
+    // Luego, filtramos para eliminar duplicados
+    musicDances = musicDances.filter((item, index, self) =>
+        index === 0 || (item.m.code+item.d._id) !== (self[index - 1].m.code+self[index - 1].d._id)
+    );
+    
     musicDances.sort((a, b) => a.m.title.localeCompare(b.m.title));
     renderTable();
     renderPagination();
