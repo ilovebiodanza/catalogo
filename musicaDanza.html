@@ -187,7 +187,7 @@ const mostrarIndice = async () => {
         index === 0 || (item.m.code+item.d._id) !== (self[index - 1].m.code+self[index - 1].d._id)
     );
     
-    musicDances.sort((a, b) => a.d.title.localeCompare(b.d.title));
+    musicDances.sort((a, b) => (a.d.title+a.m.title+a.m.author).localeCompare(b.d.title+b.m.title+b.m.author) );
     renderTable();
     renderPagination();
 };
