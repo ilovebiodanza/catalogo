@@ -186,12 +186,22 @@ const mostrarIndice = async () => {
         t.musics.forEach((m) => {
             const music = musics.find(music => music._id === m.id);
             if (music) musicDances.push({
-                m: { id: music._id, code: music.code, title: music.title, author: music.author, line: music.line, mp3: music.mp3, ogg: music.ogg, wd: music.description !== '' },
+                m: { id: music._id, code: music.code, title: music.title, author: music.author, line: music.line, mp3: music.mp3, ogg: music.ogg, wd: (music.description.length > 20) ? music._id : ''},
                 d: { id: t._id, title: t.title, dance:t.musics[0].d },
                 checked: false
             });
         });
     });
+
+    musicDances.sort((a,b) => (a.m.title+a.m.author+(a.m.wd === ''?"1":"0")).localeCompare(b.m.title+b.m.author+(b.m.wd === ''?"1":"0")));
+    musicDances.forEach((item,index,self) => {
+        if (index !== 0)    {
+            if (self[index-1].m.title+self[index-1].m.author === item.m.title+item.m.author)    {
+                musicDances[index].m.wd = self[index-1].m.wd;
+            }
+        }
+    });
+    
     console.log('Antes de la reducción', musicDances.length);
 
     musicDances.sort(ordenarDanzaMusica);
@@ -308,7 +318,7 @@ const mostrarIndice = async () => {
             paginatedData.forEach(item => {
                 const row = `<tr>
                     <td><button class="btn btn-success btn-sm" onclick="loadAndPlayMusic('audio-music',${'`'+item.m.mp3+'`'},${'`'+item.m.ogg+'`'},${'`'+item.m.code+'`'},${'`'+item.m.title+'`'},${'`'+item.m.author+'`'})"><i class="bi bi-music-note-beamed"></i></button></td>
-                    <td nowrap${item.m.wd?` class="text-primary danzo" onclick="showMusicDetails('${item.m.id}')"`:''}>${item.m.code}</td>
+                    <td nowrap${item.m.wd !== ''?` class="text-primary danzo" onclick="showMusicDetails('${item.m.wd}')"`:''}>${item.m.code}</td>
                     <td>${item.m.title}</td>
                     <td>${item.m.author}</td>
                     <td class="text-primary danzo" onclick="showDanceDetails('${item.d.id}')">${item.d.title}</td>
