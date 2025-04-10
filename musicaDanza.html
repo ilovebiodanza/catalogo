@@ -170,8 +170,8 @@ const ordenarDanzaMusica = (a, b) => {
     const comparacionMusica = (a.m.code || '').localeCompare(b.m.code || '');
     if (comparacionMusica !== 0) return comparacionMusica;
 
-    // Comparar con reseseña
-    return a.m.wd ? 0 : 1;
+    // Comparar con reseña
+    return (a.m.wd ? 0 : 1) - (b.m.wd ? 0 : 1);
 };
         
 const mostrarIndice = async () => {
@@ -194,7 +194,7 @@ const mostrarIndice = async () => {
     });
     console.log('Antes de la reducción', musicDances.length);
 
-    musicDances.sort(ordenarDanzaMusica(a,b));
+    musicDances.sort(ordenarDanzaMusica);
     
     // Luego, filtramos para eliminar duplicados
     musicDances = musicDances.filter((item, index, self) =>
