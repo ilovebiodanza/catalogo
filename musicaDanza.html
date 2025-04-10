@@ -188,19 +188,20 @@ const mostrarIndice = async () => {
             }
         });
     });
-    // Ordenar por título y autor, y asignar wd
+    // Ordenar por título y autor, y colocar los que tiennen descripcion al principio
     musicDances.sort((a, b) => {
         const aKey = a.m.title + a.m.author + (a.m.wd === '' ? "1" : "0");
         const bKey = b.m.title + b.m.author + (b.m.wd === '' ? "1" : "0");
         return aKey.localeCompare(bKey);
     });
-    // Asignar wd a duplicados
+    // Asignar wd a os que no tienen descripcion
     for (let i = 1; i < musicDances.length; i++) {
         if (musicDances[i - 1].m.title + musicDances[i - 1].m.author === musicDances[i].m.title + musicDances[i].m.author) {
             musicDances[i].m.wd = musicDances[i - 1].m.wd;
         }
     }
 
+    /*
     // Ordenar por danza, música y reseña
     musicDances.sort((a, b) => {
         const aKey = a.d.id + a.m.code + (a.m.wd === '' ? "1" : "0");
@@ -214,7 +215,6 @@ const mostrarIndice = async () => {
     );
 
     // Filtrar duplicados de manera más eficiente
-    /*
     const seen = new Set();
     musicDances = musicDances.filter(item => {
         const key = item.m.code + item.d.id;
@@ -223,6 +223,7 @@ const mostrarIndice = async () => {
         return true;
     });
     */
+
     // Ordenar por título de danza, música y autor
     musicDances.sort((a, b) => {
         const aKey = a.d.title + a.m.title + a.m.author;
