@@ -161,19 +161,76 @@ const procesarMusics = (data) => {
     musics = [...musics, ...data]; // Combinar títulos
 };
 
-const ordenarDanzaMusica = (a, b) => {
-    // Comparar por Danza (ascendente)
-    const comparacionDanza = (a.d.id || '').localeCompare(b.d.id || '');
-    if (comparacionDanza !== 0) return comparacionDanza;
+const mostrarIndice = async () => {
+    // Cargar y procesar títulos
+    await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/json/', 'Title', procesarTitles);
+    // Cargar y procesar músicas
+    await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/json/', 'Music', procesarMusics);
+    // Procesar los títulos y las músicas
+    titles.forEach((t) => {
+        t.musics.forEach((m) => {
+            const music = musics.find(music => music._id === m.id);
+            if (music) {
+                musicDances.push({
+                    m: {
+                        id: music._id,
+                        code: music.code,
+                        title: music.title,
+                        author: music.author,
+                        line: music.line,
+                        mp3: music.mp3,
+                        ogg: music.ogg,
+                        wd: (music.description.length > 20) ? music._id : ''
+                    },
+                    d: { id: t._id, title: t.title, dance: t.musics[0].d },
+                    checked: false
+                });
+            }
+        });
+    });
+    // Ordenar por título y autor, y asignar wd
+    musicDances.sort((a, b) => {
+        const aKey = a.m.title + a.m.author + (a.m.wd === '' ? "1" : "0");
+        const bKey = b.m.title + b.m.author + (b.m.wd === '' ? "1" : "0");
+        return aKey.localeCompare(bKey);
+    });
+    // Asignar wd a duplicados
+    for (let i = 1; i < musicDances.length; i++) {
+        if (musicDances[i - 1].m.title + musicDances[i - 1].m.author === musicDances[i].m.title + musicDances[i].m.author) {
+            musicDances[i].m.wd = musicDances[i - 1].m.wd;
+        }
+    }
 
-    // Comparar por Musica (ascendente)
-    const comparacionMusica = (a.m.code || '').localeCompare(b.m.code || '');
-    if (comparacionMusica !== 0) return comparacionMusica;
+    // Ordenar por danza, música y reseña
+    musicDances.sort((a, b) => {
+        const comparacionDanza = (a.d.id || '').localeCompare(b.d.id || '');
+        if (comparacionDanza !== 0) return comparacionDanza;
+        const comparacionMusica = (a.m.code || '').localeCompare(b.m.code || '');
+        if (comparacionMusica !== 0) return comparacionMusica;
+        return (a.m.wd ? 1 : 0) - (b.m.wd ? 1 : 0);
+    });
 
-    // Comparar con reseña
-    return (a.m.wd ? 1 : 0) - (b.m.wd ? 1 : 0);
+    // Filtrar duplicados de manera más eficiente
+    const seen = new Set();
+    musicDances = musicDances.filter(item => {
+        const key = item.m.code + item.d.id;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+
+    // Ordenar por título de danza, música y autor
+    musicDances.sort((a, b) => {
+        const aKey = a.d.title + a.m.title + a.m.author;
+        const bKey = b.d.title + b.m.title + b.m.author;
+        return aKey.localeCompare(bKey);
+    });
+
+    renderTable();
+    renderPagination();
 };
-        
+
+/*        
 const mostrarIndice = async () => {
     // Cargar y procesar títulos
     await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/json/', 'Title', procesarTitles);
@@ -194,6 +251,7 @@ const mostrarIndice = async () => {
     });
 
     musicDances.sort((a,b) => (a.m.title+a.m.author+(a.m.wd === ''?"1":"0")).localeCompare(b.m.title+b.m.author+(b.m.wd === ''?"1":"0")));
+    
     musicDances.forEach((item,index,self) => {
         if (index !== 0)    {
             if (self[index-1].m.title+self[index-1].m.author === item.m.title+item.m.author)    {
@@ -203,6 +261,19 @@ const mostrarIndice = async () => {
     });
     
     console.log('Antes de la reducción', musicDances.length);
+
+    const ordenarDanzaMusica = (a, b) => {
+        // Comparar por Danza (ascendente)
+        const comparacionDanza = (a.d.id || '').localeCompare(b.d.id || '');
+        if (comparacionDanza !== 0) return comparacionDanza;
+    
+        // Comparar por Musica (ascendente)
+        const comparacionMusica = (a.m.code || '').localeCompare(b.m.code || '');
+        if (comparacionMusica !== 0) return comparacionMusica;
+    
+        // Comparar con reseña
+        return (a.m.wd ? 1 : 0) - (b.m.wd ? 1 : 0);
+    };
 
     musicDances.sort(ordenarDanzaMusica);
     
@@ -216,8 +287,7 @@ const mostrarIndice = async () => {
     renderTable();
     renderPagination();
 };
-
-        
+*/        
         const regExpSearchValue = (searchValue) => {
             let regex = searchValue
                 .replace(/[aá]/gi, '[aá]')
