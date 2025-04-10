@@ -201,7 +201,6 @@ const mostrarIndice = async () => {
         }
     }
 
-    /*
     // Ordenar por danza, música y reseña
     musicDances.sort((a, b) => {
         const aKey = a.d.id + a.m.code + (a.m.wd === '' ? "1" : "0");
@@ -213,16 +212,6 @@ const mostrarIndice = async () => {
     musicDances = musicDances.filter((item, index, self) =>
         index === 0 || (item.m.code+item.d._id) !== (self[index - 1].m.code+self[index - 1].d._id)
     );
-
-    // Filtrar duplicados de manera más eficiente
-    const seen = new Set();
-    musicDances = musicDances.filter(item => {
-        const key = item.m.code + item.d.id;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-    });
-    */
 
     // Ordenar por título de danza, música y autor
     musicDances.sort((a, b) => {
