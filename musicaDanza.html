@@ -220,6 +220,31 @@ const mostrarIndice = async () => {
         return aKey.localeCompare(bKey);
     });
 
+    const sinResenia = musicDances
+    .filter(item => item.m.wd === "")  // Filtrar por wd
+    .map(item => ({
+        title: item.m.title,
+        author: item.m.author,
+        url: item.m.mp3 !== "" ? item.m.mp3 : item.m.ogg
+    }))
+    .reduce((acc, current) => {
+        const x = acc.find(item => item.title === current.title && item.author === current.author);
+        if (!x) {
+            return acc.concat([current]); // Si no existe, agregar el elemento
+        } else {
+            return acc; // Si existe, no hacer nada
+        }
+    }, []);
+
+    // Convertir a CSV
+    const encabezado = "Title\tAuthor\tURL\n";
+    const csv = sinResenia.map(item => `${item.title}\t${item.author}\t${item.url}`).join("\n");
+    
+    // Combinar encabezado y datos
+    const csvFinal = encabezado + csv;
+    
+    console.log(csvFinal);
+    
     renderTable();
     renderPagination();
 };
