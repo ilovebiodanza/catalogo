@@ -161,6 +161,19 @@ const procesarMusics = (data) => {
     musics = [...musics, ...data]; // Combinar títulos
 };
 
+const ordenarDanzaMusica = (a, b) => {
+    // Comparar por Danza (ascendente)
+    const comparacionDanza = (a.d.id || '').localeCompare(b.d.id || '');
+    if (comparacionDanza !== 0) return comparacionDanza;
+
+    // Comparar por Musica (ascendente)
+    const comparacionMusica = (a.m.code || '').localeCompare(b.m.code || '');
+    if (comparacionMusica !== 0) return comparacionMusica;
+
+    // Comparar con reseseña
+    return a.m.wd ? 0 : 1;
+};
+        
 const mostrarIndice = async () => {
     // Cargar y procesar títulos
     await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/json/', 'Title', procesarTitles);
@@ -180,8 +193,8 @@ const mostrarIndice = async () => {
         });
     });
     console.log('Antes de la reducción', musicDances.length);
-    // Primero, ordenamos el arreglo por el campo 'code e _id'
-    musicDances.sort((a, b) => (a.m.code+a.d._id).localeCompare(b.m.code+b.d._id));
+
+    musicDances.sort(ordenarDanzaMusica(a,b));
     
     // Luego, filtramos para eliminar duplicados
     musicDances = musicDances.filter((item, index, self) =>
