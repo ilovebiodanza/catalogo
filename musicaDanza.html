@@ -203,11 +203,9 @@ const mostrarIndice = async () => {
 
     // Ordenar por danza, música y reseña
     musicDances.sort((a, b) => {
-        const comparacionDanza = (a.d.id || '').localeCompare(b.d.id || '');
-        if (comparacionDanza !== 0) return comparacionDanza;
-        const comparacionMusica = (a.m.code || '').localeCompare(b.m.code || '');
-        if (comparacionMusica !== 0) return comparacionMusica;
-        return (a.m.wd ? 1 : 0) - (b.m.wd ? 1 : 0);
+        const aKey = a.d.id + a.m.code + (a.m.wd === '' ? "1" : "0");
+        const bKey = b.d.id + b.m.code + (b.m.wd === '' ? "1" : "0");
+        return aKey.localeCompare(bKey);
     });
 
     // Filtrar duplicados de manera más eficiente
