@@ -171,7 +171,7 @@ const ordenarDanzaMusica = (a, b) => {
     if (comparacionMusica !== 0) return comparacionMusica;
 
     // Comparar con reseña
-    return (a.m.wd ? 0 : 1) - (b.m.wd ? 0 : 1);
+    return (a.m.wd ? 1 : 0) - (b.m.wd ? 1 : 0);
 };
         
 const mostrarIndice = async () => {
