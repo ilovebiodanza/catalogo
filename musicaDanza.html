@@ -208,7 +208,13 @@ const mostrarIndice = async () => {
         return aKey.localeCompare(bKey);
     });
 
+    // Luego, filtramos para eliminar duplicados
+    musicDances = musicDances.filter((item, index, self) =>
+        index === 0 || (item.m.code+item.d._id) !== (self[index - 1].m.code+self[index - 1].d._id)
+    );
+
     // Filtrar duplicados de manera más eficiente
+    /*
     const seen = new Set();
     musicDances = musicDances.filter(item => {
         const key = item.m.code + item.d.id;
@@ -216,7 +222,7 @@ const mostrarIndice = async () => {
         seen.add(key);
         return true;
     });
-
+    */
     // Ordenar por título de danza, música y autor
     musicDances.sort((a, b) => {
         const aKey = a.d.title + a.m.title + a.m.author;
