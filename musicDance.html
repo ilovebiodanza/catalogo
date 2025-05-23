@@ -341,6 +341,9 @@ const mostrarIndice = async () => {
             newLine = newLine.replace("Creatividad", "CR");
             return newLine;
         }
+        const lapm = (i, m, o, c, t, a) => {
+            loadAndPlayMusic(i, mvst.des(c,m), mvst.des(c,o), c, t, a);
+        }
 
         const renderTable = (searchedValue = '') => {
             const dataTable = document.getElementById('dataTable');
@@ -349,7 +352,7 @@ const mostrarIndice = async () => {
             const paginatedData = getPage(searchedValue, limit, currentPage);
             paginatedData.forEach(item => {
                 const row = `<tr>
-                    <td><button class="btn btn-success btn-sm" onclick="loadAndPlayMusic('audio-music',${'`'+item.m.mp3+'`'},${'`'+item.m.ogg+'`'},${'`'+item.m.code+'`'},${'`'+item.m.title+'`'},${'`'+item.m.author+'`'})"><i class="bi bi-music-note-beamed"></i></button></td>
+                    <td><button class="btn btn-success btn-sm" onclick="lapm('audio-music',${'`'+item.m.mp3+'`'},${'`'+item.m.ogg+'`'},${'`'+item.m.code+'`'},${'`'+item.m.title+'`'},${'`'+item.m.author+'`'})"><i class="bi bi-music-note-beamed"></i></button></td>
                     <td nowrap${item.m.wd !== ''?` class="text-primary danzo" onclick="showMusicDetails('${item.m.wd}')"`:''}>${item.m.code}</td>
                     <td>${item.m.title}</td>
                     <td>${item.m.author}</td>
