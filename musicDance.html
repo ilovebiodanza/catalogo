@@ -14,6 +14,7 @@
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script src="https://ilovebiodanza.top/js/musicaDB.js"></script>
     <script src="https://ilovebiodanza.top/js/util.js"></script>
+    <script src="https://ilovebiodanza.top/js/moverEstructuras.class.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <script>const language= "es";</script>
     <script src="https://ilovebiodanza.top/js/lang.js"></script>
@@ -125,6 +126,7 @@ const limit = 30;
 let sortOrder = 'asc'; // Orden por defecto
 let filteredMusicDances = [];
 let dataRandom =[];
+const mvst = new MoverEstructuras('0a1Ab@Bc#C2d$De%EfF^gG&hH3iI(Jj4)k-KlLm5Mn+NoOpPq6Q]rRSs}t|TuU;V7v:w8WxX9'y,Y=Zz<>?/`~ !_*[{');
 
 async function cargarDatos(jsonFile) {
     try {
@@ -445,7 +447,7 @@ const mostrarIndice = async () => {
 
             modalBody.innerHTML = `
                 <p><strong>Danza:</strong> ${dance.title}</p>
-                <p><strong>Descripción:</strong> ${dance.description}</p>
+                <p><strong>Descripción:</strong> ${mvst.des(id,dance.description)}</p>
             `;
             $('#danceModal').modal('show'); // Mostrar el modal
         };
