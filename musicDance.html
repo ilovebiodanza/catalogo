@@ -458,7 +458,7 @@ const mostrarIndice = async () => {
 
             modalBody.innerHTML = `
                 <p><strong>Music:</strong> ${music.title} - ${music.author}</p>
-                <p><strong>Descripción:</strong> ${music.description}</p>
+                <p><strong>Descripción:</strong> ${mvst.des(music.code,music.description)}</p>
             `;
             $('#musicModal').modal('show'); // Mostrar el modal
         };
