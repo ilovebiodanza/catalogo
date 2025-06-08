@@ -566,7 +566,7 @@ const mostrarIndice = async () => {
             // Reproduce la música
             const item = dataRandom[randomIndex];
             // audioElement.src = selectedMusic.url;
-            loadAndPlayMusic('audio-music',item.m.mp3,item.m.ogg,item.m.code,item.m.title,item.m.author);
+            loadAndPlayMusic('audio-music', mvst.des(item.m.code,item.m.mp3), mvst.des(item.m.code,item.m.ogg),item.m.code,item.m.title,item.m.author);
             //audioElement.play();
 
             // Cuando la música termine de reproducirse, llama a la función nuevamente
