@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catálogo General de Biodanza</title>
+  <link id="tema" rel="stylesheet" href="css/themes/cerulean.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body id="mb">
+    <div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
+        <audio is="amo-biodanza-audio" analyst preload="none" id="audio-music" style="z-index: 9999;display: none;"></audio>
+    </div>
+    
+    <div class="container" id="contenido">
+        <div class="toast" data-autohide="false" id="busqueda" style="position: fixed; top: 10px; right:10px; z-index: 9999;">
+            <div class="toast-header">
+              <strong class="mr-auto text-primary">Buscar</strong>
+              <small class="p-2 text-muted badge badge-light" style="cursor:pointer" id="contador"></small>
+              <span class="p-2 badge badge-light text-danger" id="anterior" disabled style="transform: scaleX(-1);cursor:pointer">❥</span>
+              <span class="p-2 badge badge-light text-danger" id="siguiente" disabled style="cursor:pointer">❥</span>
+            </div>
+            <div class="toast-body">
+                <div class="form-group">
+              <input type="text" class="form-control" id="myInput" placeholder="Palabra o frase" autocomplete="off">
+            </div>
+            </div>
+        </div>
+
+        <div class="jumbotron jumbotron-fluid">
+          <div class="container" id="container">
+            <h1 class="display-4">Catálogo de Biodanza</h1>
+            <p class="lead">Recopilación exhaustiva y detallada de todas las danzas en los repertorios de Biodanza...</p>
+          </div>
+        </div>  
+
+        <table class="table table-borderless">
+            <tbody id="myTable"></tbody>
+        </table>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/vendor/jquery.min.js"></script>
+    <script src="js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="js/common/moverEstructuras.js"></script>
+    <script src="js/common/utils.js"></script>
+    <script src="js/common/config.js"></script>
+    <script src="js/common/audio.js"></script>
+    <script src="js/catalog/main.js"></script>
+</body>
+</html>
