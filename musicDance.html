@@ -426,8 +426,8 @@
                             ${item.m.wd !== '' ? '<i class="bi bi-info-circle text-info ms-1"></i>' : ''}
                         </td>
                         <td class="small">
-                            ${item.m.title}</br>
-                            ${item.m.author}
+                            <span class="text-primary">${item.m.title}</span></br>
+                            <span class="text-danger">${item.m.author}</span>
                         </td>
                         <td style="cursor:pointer" class="text-primary danzo" onclick="showDanceDetails('${item.d.id}')">
                             ${item.d.title}
