@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Música y Danza</title>
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <link id="tema" rel="stylesheet" href="bootstrap.min.cerulean.css"> <!-- Tema por defecto -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="https://ilovebiodanza.top/css/main.css">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/sonification.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://ilovebiodanza.top/js/musicaDB.js"></script>
+    <script src="https://ilovebiodanza.top/js/util.js"></script>
+    <script src="https://ilovebiodanza.top/js/moverEstructuras.class.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script>const language= "es";</script>
+    <script src="https://ilovebiodanza.top/js/lang.js"></script>
+    <style>
+        .pagination {
+            justify-content: center;
+        }
+        th {
+            cursor: pointer;
+        }
+        td.danzo {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body id="mb">
+    <div style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;">
+        <audio is="amo-biodanza-audio" analyst preload="none" id="audio-music" style="z-index: 9999;display: none;"></audio>
+    </div>
+
+    <div class="container mt-5">
+        <h1 class="text-center">Música y Danza</h1>
+        <!--
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+        </div>
+        -->
+
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+            <div class="input-group-append">
+              <button class="btn btn-success" type="button" onclick="playRandomMusic()"><i class="bi bi-shuffle"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span class="badge badge-light" id="random-monitor"></span></button>  
+             </div>
+          </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination" id="pagination">
+                <!-- Los botones de paginación se insertarán aquí -->
+            </ul>
+        </nav>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th onclick="sortTable('m.code')">Código</th>
+                    <th onclick="sortTable('m.title')">Título</th>
+                    <th onclick="sortTable('m.author')">Autor</th>
+                    <th onclick="sortTable('d.title')">Danza</th>
+                    <th onclick="sortTable('m.line')">Línea</th>
+                    <th class="align-top"><input id="filterChecked" type="checkbox" class="form-check-input"></th>
+                </tr>
+            </thead>
+            <tbody id="dataTable">
+                <!-- Los datos se insertarán aquí -->
+            </tbody>
+        </table>
+        <div class="invisible" id="clickboard">
+            <hr>
+            <button type="button" class="btn btn-primary">Copy to clipboard</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="danceModal" tabindex="-1" role="dialog" aria-labelledby="danceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="danceModalLabel">Detalles de la Danza</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="danceModalBody">
+                    <!-- Los detalles del danzo se insertarán aquí -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="musicModal" tabindex="-1" role="dialog" aria-labelledby="musicModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="musicModalLabel">Detalles de la Musica</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="musicModalBody">
+                    <!-- Los detalles del danzo se insertarán aquí -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="ms">
+let titles = [];
+let musics = [];
+let musicDances = [];
+let currentPage = 1;
+const limit = 30;
+let sortOrder = 'asc'; // Orden por defecto
+let filteredMusicDances = [];
+let dataRandom =[];
+const mvst = new MoverEstructuras("0a1Ab@Bc#C2d$De%EfF^gG&hH3iI(Jj4)k-KlLm5Mn+NoOpPq6Q]rRSs}t|TuU;V7v:w8WxX9'y,Y=Zz<>?/`~ !_*[{");
+
+async function cargarDatos(jsonFile) {
+    try {
+        const response = await fetch(jsonFile);
+        if (!response.ok) throw new Error('Error en la red');
+        return await response.json();
+    } catch (error) {
+        console.error('Hubo un problema con la solicitud Fetch:', error);
+    }
+}
+
+async function cargarYProcesarDatos(baseUrl, tipo, procesarDatos) {
+    let part = 1;
+    let morePartsAvailable = true;
+
+    while (morePartsAvailable) {
+        const url = `${baseUrl}${tipo}_part${part}.json`;
+        const data = await cargarDatos(url);
+
+        if (!data || data.length === 0) {
+            morePartsAvailable = false; // Salir del ciclo si no hay más partes
+        } else {
+            procesarDatos(data); // Procesar los datos cargados
+            part++; // Incrementar el número de parte para la siguiente iteración
+        }
+    }
+}
+
+const procesarTitles = (data) => {
+    titles = [...titles, ...data]; // Combinar títulos
+};
+
+const procesarMusics = (data) => {
+    musics = [...musics, ...data]; // Combinar títulos
+};
+
+const mostrarIndice = async () => {
+    // Cargar y procesar títulos
+    await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/data/', 'Title', procesarTitles);
+    // Cargar y procesar músicas
+    await cargarYProcesarDatos('https://ilovebiodanza.github.io/catalogo/data/', 'Music', procesarMusics);
+    // Procesar los títulos y las músicas
+    titles.forEach((t) => {
+        t.musics.forEach((m) => {
+            const music = musics.find(music => music._id === m.id);
+            if (music) {
+                musicDances.push({
+                    m: {
+                        id: music._id,
+                        code: music.code,
+                        title: music.title,
+                        author: music.author,
+                        line: music.line,
+                        mp3: music.mp3,
+                        ogg: music.ogg,
+                        wd: (music.description.length > 20) ? music._id : ''
+                    },
+                    d: { id: t._id, title: t.title, dance: t.musics[0].d },
+                    checked: false
+                });
+            }
+        });
+    });
+    // Ordenar por título y autor, y colocar los que tiennen descripcion al principio
+    musicDances.sort((a, b) => {
+        const aKey = a.m.title + a.m.author + (a.m.wd === '' ? "1" : "0");
+        const bKey = b.m.title + b.m.author + (b.m.wd === '' ? "1" : "0");
+        return aKey.localeCompare(bKey);
+    });
+    // Asignar wd a os que no tienen descripcion
+    for (let i = 1; i < musicDances.length; i++) {
+        if (musicDances[i - 1].m.title + musicDances[i - 1].m.author === musicDances[i].m.title + musicDances[i].m.author) {
+            musicDances[i].m.wd = musicDances[i - 1].m.wd;
+        }
+    }
+
+    // Ordenar por danza, música y reseña
+    musicDances.sort((a, b) => {
+        const aKey = a.d.id + a.m.code + (a.m.wd === '' ? "1" : "0");
+        const bKey = b.d.id + b.m.code + (b.m.wd === '' ? "1" : "0");
+        return aKey.localeCompare(bKey);
+    });
+
+    // Luego, filtramos para eliminar duplicados
+    musicDances = musicDances.filter((item, index, self) =>
+        index === 0 || (item.m.code+item.d._id) !== (self[index - 1].m.code+self[index - 1].d._id)
+    );
+
+    // Ordenar por título de danza, música y autor
+    musicDances.sort((a, b) => {
+        const aKey = a.d.title + a.m.title + a.m.author;
+        const bKey = b.d.title + b.m.title + b.m.author;
+        return aKey.localeCompare(bKey);
+    });
+
+    const sinResenia = musicDances
+    .filter(item => item.m.wd === "")  // Filtrar por wd
+    .map(item => ({
+        title: item.m.title,
+        author: item.m.author
+    }))
+    .reduce((acc, current) => {
+        const x = acc.find(item => item.title === current.title && item.author === current.author);
+        if (!x) {
+            return acc.concat([current]); // Si no existe, agregar el elemento
+        } else {
+            return acc; // Si existe, no hacer nada
+        }
+    }, []);
+
+    // Convertir a CSV
+    const encabezado = "Title\tAuthor\n";
+    const csv = sinResenia.map(item => `${item.title}\t${item.author}`).join("\n");
+    
+    // Combinar encabezado y datos
+    const csvFinal = encabezado + csv;
+    
+    console.log(csvFinal);
+    
+    renderTable();
+    renderPagination();
+};
+
+        const regExpSearchValue = (searchValue) => {
+            let regex = searchValue
+                .replace(/[aá]/gi, '[aá]')
+                .replace(/[eé]/gi, '[eé]')
+                .replace(/[ií]/gi, '[ií]')
+                .replace(/[oó]/gi, '[oó]')
+                .replace(/[uúü]/gi, '[uúü]');
+            return new RegExp(regex, 'gi');
+        };
+
+        const getPage = (searchedValue, limit, page) => {
+            const searchTerms = searchedValue.split(" ");
+            const regTerms = searchTerms.map(regExpSearchValue);
+            const fullfield = (item) => `${item.m.code} ${item.m.title} ${item.m.author} ${item.m.line} ${item.d.title}`;
+
+            const isCheckedFilter = document.getElementById('filterChecked').checked;
+
+            const filteredData = musicDances.filter(item => 
+                (!isCheckedFilter || item.checked) && 
+                regTerms.every(term => fullfield(item).toLowerCase().match(term))
+            );
+            const startIndex = limit * (page - 1);
+
+            // Si el filtro está activado, generar un arreglo con los campos específicos
+            if (isCheckedFilter) {
+                filteredMusicDances = filteredData.map(item => ({
+                    m: {
+                        id: item.m.id,
+                        code: item.m.code,
+                        title: item.m.title,
+                        author: item.m.author,
+                        line: item.m.line
+                    },
+                    d: {
+                        id: item.d.dance,
+                        title: item.d.title
+                    }
+                }));
+                document.querySelector('#clickboard').classList.remove('invisible');
+            } else {
+                filteredMusicDances = []; // Limpiar la variable si el filtro no está activo
+                document.querySelector('#clickboard').classList.add('invisible');
+            }
+
+            dataRandom = eliminarMusicasDuplicadas(filteredData); // Data para la musica Random
+            playedMusic = []; // Musica escuchada;
+            randomMonitor.textContent=`${playedMusic.length} / ${dataRandom.length}`
+
+            return filteredData.slice(startIndex, startIndex + limit);
+        };
+
+        // Función para copiar al portapapeles
+        const copyToClipboard = () => {
+            // Títulos de las columnas
+            const headers = "ID Musica\tCodigo\tTitulo\tAutor\tLinea\tID Danza\tTitulo Danza";
+            
+            const textToCopy = filteredMusicDances.map(item => 
+                `${item.m.id}\t${item.m.code}\t${item.m.title}\t${item.m.author}\t${item.m.line}\t${item.d.id}\t${item.d.title}`
+            ).join('\n');
+
+            // Combinar encabezados y datos
+            const fullText = `${headers}\n${textToCopy}`;
+
+            navigator.clipboard.writeText(fullText).then(() => {
+                alert('Las danzas y músicas seleccionadas han sido copiadas al portapapeles.');
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+            });
+        };
+
+        // Agregar el evento al botón
+        document.querySelector('.btn-primary').addEventListener('click', copyToClipboard);
+
+        // Función para cambiar el estado de los checkboxes
+        const changeChecked = (danceId, musicId, isChecked) => {
+            const item = musicDances.find(i => i.d.id === danceId && i.m.id === musicId);
+            if (item) {
+                item.checked = isChecked; // Actualizar el estado checked
+                renderTable(document.getElementById('searchInput').value); // Renderizar la tabla nuevamente
+                renderPagination(); // Renderizar la paginación
+            }
+        };
+
+        const shortLine = (line)   =>   {
+            let newLine = line.replace("Afectividad", "AF");
+            newLine = newLine.replace("Sexualidad", "SX");
+            newLine = newLine.replace("Vitalidad", "VT");
+            newLine = newLine.replace("Trascendencia", "TR");
+            newLine = newLine.replace("Creatividad", "CR");
+            return newLine;
+        }
+        const lapm = (id, mId) => {
+            const m = musics.find(music => music._id === mId);
+            loadAndPlayMusic(id, mvst.des(m.code,m.mp3), mvst.des(m.code,m.ogg), m.code, m.title, m.author);
+        }
+
+        const renderTable = (searchedValue = '') => {
+            const dataTable = document.getElementById('dataTable');
+            dataTable.innerHTML = '';
+
+            const paginatedData = getPage(searchedValue, limit, currentPage);
+            paginatedData.forEach(item => {
+                const row = `<tr>
+                    <td><button class="btn btn-success btn-sm" onclick="lapm('audio-music',${'`'+item.m.id+'`'})"><i class="bi bi-music-note-beamed"></i></button></td>
+                    <td nowrap${item.m.wd !== ''?` class="text-primary danzo" onclick="showMusicDetails('${item.m.wd}')"`:''}>${item.m.code}</td>
+                    <td>${item.m.title}</td>
+                    <td>${item.m.author}</td>
+                    <td class="text-primary danzo" onclick="showDanceDetails('${item.d.id}')">${item.d.title}</td>
+                    <td nowrap>${shortLine(item.m.line)}</td>
+                    <td class="text-right"><input type="checkbox" class="form-check-input" onclick="changeChecked('${item.d.id}','${item.m.id}',this.checked)" ${item.checked?'checked':''}></td>
+                </tr>`;
+                dataTable.innerHTML += row;
+            });
+        };
+
+        const renderPagination = () => {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const totalPages = Math.ceil(musicDances.length / limit);
+            const maxButtons = 5; // Número máximo de botones visibles
+
+            // Botón para la primera página
+            if (currentPage > 1) {
+                pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(1)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-backward" viewBox="0 0 16 16">
+  <path d="M.5 3.5A.5.5 0 0 1 1 4v3.248l6.267-3.636c.52-.302 1.233.043 1.233.696v2.94l6.267-3.636c.52-.302 1.233.043 1.233.696v7.384c0 .653-.713.998-1.233.696L8.5 8.752v2.94c0 .653-.713.998-1.233.696L1 8.752V12a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5m7 1.133L1.696 8 7.5 11.367zm7.5 0L9.196 8 15 11.367z"/>
+</svg></a></li>`;
+            }
+
+            // Botón "Anterior"
+            if (currentPage > 1) {
+                pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-start" viewBox="0 0 16 16">
+  <path d="M4 4a.5.5 0 0 1 1 0v3.248l6.267-3.636c.52-.302 1.233.043 1.233.696v7.384c0 .653-.713.998-1.233.696L5 8.752V12a.5.5 0 0 1-1 0zm7.5.633L5.696 8l5.804 3.367z"/>
+</svg></a></li>`;
+            }
+
+            // Botones de paginación
+            let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+            let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+            if (endPage - startPage < maxButtons - 1) {
+                startPage = Math.max(1, endPage - maxButtons + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const button = `<li class="page-item ${currentPage === i ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                </li>`;
+                pagination.innerHTML += button;
+            }
+
+            // Botón "Siguiente"
+            if (currentPage < totalPages) {
+                pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-end" viewBox="0 0 16 16">
+  <path d="M12.5 4a.5.5 0 0 0-1 0v3.248L5.233 3.612C4.713 3.31 4 3.655 4 4.308v7.384c0 .653.713.998 1.233.696L11.5 8.752V12a.5.5 0 0 0 1 0zM5 4.633 10.804 8 5 11.367z"/>
+</svg></a></li>`;
+            }
+
+            // Botón para la última página
+            if (currentPage < totalPages) {
+                pagination.innerHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${totalPages})"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-forward" viewBox="0 0 16 16">
+  <path d="M15.5 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V8.752l-6.267 3.636c-.52.302-1.233-.043-1.233-.696v-2.94l-6.267 3.636C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696L7.5 7.248v-2.94c0-.653.713-.998 1.233-.696L15 7.248V4a.5.5 0 0 1 .5-.5M1 4.633v6.734L6.804 8zm7.5 0v6.734L14.304 8z"/>
+</svg></a></li>`;
+            }
+        };
+
+        const changePage = (page) => {
+            currentPage = page;
+            renderTable(document.getElementById('searchInput').value);
+            renderPagination();
+        };
+
+        const sortTable = (field) => {
+            const order = sortOrder === 'asc' ? 'desc' : 'asc';
+            sortOrder = order;
+            aField = field.split('.');
+
+            musicDances.sort((a, b) => {
+                if (order === 'asc') {
+                    return a[aField[0]][aField[1]].localeCompare(b[aField[0]][aField[1]]);
+                } else {
+                    return b[aField[0]][aField[1]].localeCompare(a[aField[0]][aField[1]]);
+                }
+            });
+
+            renderTable(document.getElementById('searchInput').value);
+            renderPagination();
+        };
+
+        document.getElementById('searchInput').addEventListener('input', (event) => {
+            currentPage = 1; // Reset to first page on search
+            renderTable(event.target.value);
+            renderPagination();
+        });
+
+        const showDanceDetails = (id) => {
+            const modalBody = document.getElementById('danceModalBody');
+            const dance = titles.find(title => title._id === id);
+
+            modalBody.innerHTML = `
+                <p><strong>Danza:</strong> ${dance.title}</p>
+                <p><strong>Descripción:</strong> ${mvst.des(id,dance.description)}</p>
+            `;
+            $('#danceModal').modal('show'); // Mostrar el modal
+        };
+
+        const showMusicDetails = (id) => {
+            const modalBody = document.getElementById('musicModalBody');
+            const music = musics.find(music => music._id === id);
+
+            modalBody.innerHTML = `
+                <p><strong>Music:</strong> ${music.title} - ${music.author}</p>
+                <p><strong>Descripción:</strong> ${mvst.des(music.code,music.description)}</p>
+            `;
+            $('#musicModal').modal('show'); // Mostrar el modal
+        };
+
+        mostrarIndice();
+
+        // Función para manejar el cambio del checkbox en el encabezado
+        document.getElementById('filterChecked').addEventListener('change', function() {
+            // Limpiar el input de búsqueda
+            document.getElementById('searchInput').value = '';
+            // Ejecutar getPage con los nuevos parámetros
+            currentPage=1;
+            renderTable();
+            renderPagination();
+        });
+
+    </script>
+        <script src="https://ilovebiodanza.top/js/element.music-analyst.js"></script>
+        <script src='https://ilovebiodanza.top/js/miAudio.js'></script>
+        <script src='https://ilovebiodanza.top/js/audio.js'></script>
+    
+        <!-- Bootstrap JS y dependencias -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>            
+            function cargarTema() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const tema = urlParams.get('tema') || 'cerulean'; // Tema por defecto si no se especifica
+                const temasDisponibles = [
+                    'cerulean', 'ciborg', 'cosmo', 'darkly', 'flatly', 
+                    'journal', 'litera', 'lumen', 'lux', 'materia', 
+                    'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 
+                    'slate', 'solar', 'spacelab', 'superhero', 'united', 
+                    'yeti'
+                ];
+            
+                if (temasDisponibles.includes(tema)) {
+                    document.getElementById('tema').href = `bootstrap.min.${tema}.css`;
+                } else {
+                    console.warn('Tema no válido. Se cargará el tema por defecto.');
+                }
+            }
+            window.onload = cargarTema;
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Función para desencriptar un texto en Base64
+            function desencriptar(texto) {
+                return atob(texto); // Utiliza Base64 para desencriptar
+            }
+            // Obtener los parámetros de la URL
+            const params = new URLSearchParams(window.location.search);
+            const fechaEncriptada = params.get('ff');
+            console.log({fechaEncriptada});
+            if (fechaEncriptada) {
+                // Desencriptar la fecha
+                const fechaDesencriptada = new Date(desencriptar(fechaEncriptada));
+                // console.log(`ff ${fechaDesencriptada}`);
+                // Función para verificar si la fecha actual supera la fecha desencriptada
+                function verificarFecha() {
+                    const fechaActual = new Date();
+                    if (fechaActual > fechaDesencriptada) {
+                        document.getElementById('mb').innerHTML="";
+                        window.location.href = "https://ilovebiodanza.top";
+                    } else {
+                        console.log("La fecha actual no ha superado la fecha recibida.");
+                    }
+                }
+                // Verificar de inmediato
+                verificarFecha();
+                setInterval(verificarFecha, 300000); // Cada 5 minutos
+            } else {
+                document.getElementById('mb').innerHTML="";
+                window.location.href = "https://ilovebiodanza.top";
+            }
+                
+        });
+    
+        // Elemento de audio
+        const audioElement = document.getElementById('audio-music');
+        const randomMonitor = document.getElementById('random-monitor');
+
+        // Array para llevar un registro de las músicas reproducidas
+        let playedMusic = [];
+
+        // Función para reproducir música aleatoria
+        function playRandomMusic() {
+            if (playedMusic.length === dataRandom.length) {
+                alert('Todas las canciones han sido reproducidas.');
+                return; // Termina si todas las canciones han sido reproducidas
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * dataRandom.length);
+            } while (playedMusic.includes(randomIndex));
+
+            // Agrega la música seleccionada al array de reproducidas
+            playedMusic.push(randomIndex);
+            randomMonitor.textContent=`${playedMusic.length} / ${dataRandom.length}`;
+
+            // Reproduce la música
+            const item = dataRandom[randomIndex];
+            // audioElement.src = selectedMusic.url;
+            loadAndPlayMusic('audio-music', mvst.des(item.m.code,item.m.mp3), mvst.des(item.m.code,item.m.ogg),item.m.code,item.m.title,item.m.author);
+            //audioElement.play();
+
+            // Cuando la música termine de reproducirse, llama a la función nuevamente
+            setTimeout(() => audioElement.onended = playRandomMusic, 2000);
+        }
+        // Función para eliminar elementos duplicados
+        function eliminarMusicasDuplicadas(musicList) {
+            const uniqueMusic = [];
+            const seenMusic = new Set();
+        
+            for (const music of musicList) {
+                if (!seenMusic.has(music.m.title+music.m.author)) {
+                    uniqueMusic.push(music);
+                    seenMusic.add(music.m.title+music.m.author);
+                }
+            }
+        
+            return uniqueMusic;
+        }
+
+    </script>   
+</body>
+</html>
+
