@@ -40,7 +40,7 @@
                         <div class="input-group-append">
                             <button class="btn btn-light" type="button" onclick="playRandomMusic()">
                                 <i class="bi bi-shuffle"></i>
-                                <span class="badge bg-primary ms-1 text-light" id="random-monitor">0/0</span>
+                                <span class="badge bg-primary ms-1 text-light" id="random-monitor">0 de 0</span>
                             </button>  
                         </div>
                     </div>
@@ -395,7 +395,7 @@ const TableManager = {
         AppState.dataRandom = Utils.removeDuplicates(filteredData);
         AppState.playedMusic = [];
         document.getElementById('random-monitor').textContent = 
-            `${AppState.playedMusic.length} / ${AppState.dataRandom.length}`;
+            `${AppState.playedMusic.length} de ${AppState.dataRandom.length}`;
 
         // Actualizar estadísticas
         this.updateStats(filteredData.length, page, filteredData.slice(startIndex, startIndex + AppConfig.itemsPerPage).length);
