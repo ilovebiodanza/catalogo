@@ -585,7 +585,7 @@ const SortManager = {
 };
 
 // =============================================
-// Módulo: Gestión de Audio
+// Módulo: Gestión de Audio (Corregido - Manteniendo compatibilidad con librerías existentes)
 // =============================================
 const AudioManager = {
     // Reproducir música
@@ -603,7 +603,7 @@ const AudioManager = {
         }
     },
 
-    // Reproducir música aleatoria
+    // Reproducir música aleatoria (versión corregida)
     playRandomMusic() {
         if (AppState.playedMusic.length === AppState.dataRandom.length) {
             alert('Todas las canciones han sido reproducidas.');
@@ -620,11 +620,17 @@ const AudioManager = {
             `${AppState.playedMusic.length} / ${AppState.dataRandom.length}`;
 
         const item = AppState.dataRandom[randomIndex];
-        this.playMusic(item.m.id);
         
-        // Configurar reproducción automática de la siguiente canción
+        // Usar AudioManager directamente para evitar problemas de contexto
+        AudioManager.playMusic(item.m.id);
+        
+        // Configurar el siguiente track usando una función que mantenga el contexto
         setTimeout(() => {
-            document.getElementById('audio-music').onended = this.playRandomMusic;
+            const audioElement = document.getElementById('audio-music');
+            if (audioElement) {
+                // Usar una función flecha para mantener el contexto léxico
+                audioElement.onended = () => AudioManager.playRandomMusic();
+            }
         }, 2000);
     }
 };
