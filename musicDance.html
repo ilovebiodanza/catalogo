@@ -76,11 +76,18 @@
                     <thead class="table-dark">
                         <tr>
                             <th width="60"></th>
-                            <th onclick="sortTable('m.code')" class="sortable">Código</th>
-                            <th>🎶 Música 🎵 <span onclick="sortTable('m.title')" class="sortable">Título</span> / 
-                            <span onclick="sortTable('m.author')" class="sortable">Autor</span></th>
-                            <th onclick="sortTable('d.title')" class="sortable">💃 Danza 🕺</th>
-                            <th onclick="sortTable('m.line')" class="sortable">Línea</th>
+                            <th>🎶 Música 🎵
+                                <a class="text-decoration-none" style="cursor:s-resize" href="javascript:sortTable('m.code')" data-toggle="tooltip" title="Ordenar por Código">Código</a>
+                                /
+                                <a class="text-decoration-none" style="cursor:s-resize" href="javascript:sortTable('m.title')" data-toggle="tooltip" title="Ordenar por Título">Título</a>
+                                /
+                                <a class="text-decoration-none" style="cursor:s-resize" href="javascript:sortTable('m.author')" data-toggle="tooltip" title="Ordenar por Autor">Autor</a></th>
+                            <th>💃
+                                <a class="text-decoration-none" style="cursor:s-resize" href="javascript:sortTable('d.title')" data-toggle="tooltip" title="Ordenar por Danza">Danza</a>
+                                🕺</th>
+                            <th>
+                                <a class="text-decoration-none" style="cursor:s-resize" href="javascript:sortTable('m.line')" data-toggle="tooltip" title="Ordenar por Linea de Vivencia">Linea</a>
+                                </th>
                             <th width="80" class="text-center">
                                 <i class="bi bi-check-square" title="Seleccionar"></i>
                             </th>
@@ -440,13 +447,11 @@ const TableManager = {
                     <i class="bi bi-music-note-beamed"></i>
                 </button>
             </td>
-            <td nowrap style="cursor:pointer" class="${item.m.wd !== '' ? 'fw-bold text-dark danzo' : 'fw-bold text-dark'}" 
+            <td class="small" style="cursor:pointer" class="${item.m.wd !== '' ? 'fw-bold text-dark danzo' : 'fw-bold text-dark'}" 
                 ${item.m.wd !== '' ? `onclick="ModalManager.showMusicDetails('${item.m.wd}')"` : ''}>
-                ${item.m.code}
-                ${item.m.wd !== '' ? '<i class="bi bi-info-circle text-info ms-1"></i>' : ''}
-            </td>
-            <td class="small">
-                <span class="text-primary">${item.m.title}</span></br>
+                <span class="text-dark">${item.m.code}</span>
+                <span class="text-primary">${item.m.title}</span>
+                ${item.m.wd !== '' ? '<i class="bi bi-info-circle text-info ms-1"></i>' : ''}</br>
                 <span class="text-danger">${item.m.author}</span>
             </td>
             <td style="cursor:pointer" class="text-primary danzo" onclick="ModalManager.showDanceDetails('${item.d.id}')">
