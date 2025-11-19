@@ -623,7 +623,7 @@ const AudioManager = {
 };
 
 // =============================================
-// Módulo: Gestión de Modales
+// Módulo: Gestión de Modales (Corregido para Bootstrap 4)
 // =============================================
 const ModalManager = {
     // Mostrar detalles de danza
@@ -636,6 +636,8 @@ const ModalManager = {
                 <p><strong>Danza:</strong> ${dance.title}</p>
                 <p><strong>Descripción:</strong> ${AppState.mvst.des(id, dance.description)}</p>
             `;
+            
+            // Usar jQuery con Bootstrap 4
             $('#danceModal').modal('show');
         }
     },
@@ -650,11 +652,13 @@ const ModalManager = {
                 <p><strong>Música:</strong> ${music.title} - ${music.author}</p>
                 <p><strong>Descripción:</strong> ${AppState.mvst.des(music.code, music.description)}</p>
             `;
+            
+            // Usar jQuery con Bootstrap 4
             $('#musicModal').modal('show');
         }
     }
 };
-
+        
 // =============================================
 // Módulo: Portapapeles
 // =============================================
