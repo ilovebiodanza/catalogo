@@ -40,7 +40,7 @@
                         <div class="input-group-append">
                             <button class="btn btn-light" type="button" onclick="playRandomMusic()">
                                 <i class="bi bi-shuffle"></i>
-                                <span class="badge bg-primary ms-1" id="random-monitor">0/0</span>
+                                <span class="badge bg-primary ms-1 text-light" id="random-monitor">0/0</span>
                             </button>  
                         </div>
                     </div>
@@ -407,7 +407,7 @@ const TableManager = {
     updateStats(total, currentPage, showing) {
         const totalPages = Math.ceil(total / AppConfig.itemsPerPage);
         document.getElementById('total-registros').innerHTML = 
-            `<strong>${total}</strong> items | Página: <strong>${currentPage}</strong> / <strong>${totalPages}</strong> | Mostrando: <strong>${showing}</strong>`;
+            `<strong>${total}</strong> items | Página: <strong>${currentPage}</strong> de <strong>${totalPages}</strong> | Mostrando: <strong>${showing}</strong>`;
 
         const selectedCount = AppState.musicDances.filter(item => item.checked).length;
         document.getElementById('selected-count').textContent = 
