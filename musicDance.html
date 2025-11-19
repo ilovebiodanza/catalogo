@@ -50,20 +50,14 @@
             <div>
                 <span class="text-muted" id="total-registros">Total: 0 registros</span>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="filterChecked">
-                <label class="form-check-label text-muted" for="filterChecked">
-                    Mostrar solo seleccionados
-                </label>
-            </div>
-        </div>
-
-        <!-- Navegación -->
+                    <!-- Navegación -->
         <nav aria-label="Navegación de páginas">
             <ul class="pagination pagination-sm justify-content-center" id="pagination">
                 <!-- Los botones de paginación se insertarán aquí -->
             </ul>
         </nav>
+
+        </div>
 
         <!-- Tabla -->
         <div class="bg-white rounded shadow-sm">
@@ -78,7 +72,18 @@
                             <th onclick="sortTable('d.title')" class="sortable">💃 Danza 🕺</th>
                             <th onclick="sortTable('m.line')" class="sortable">Línea</th>
                             <th width="80" class="text-center">
+
+            <div class="form-check">
+                <input title="Mostrar solo seleccionados" class="form-check-input" type="checkbox" id="filterChecked">
+<!--                <label class="form-check-label text-muted" for="filterChecked">
+                    Mostrar solo seleccionados
+                </label> -->
+            </div>
+
+                                
+                                <!--
                                 <i class="bi bi-check-square" title="Seleccionar"></i>
+                                -->
                             </th>
                         </tr>
                     </thead>
