@@ -1,0 +1,210 @@
+{
+  "id": "contacts",
+  "version": 1,
+  "language": "es",
+  "title": "Cómo usar Contactos",
+  "status": "script-approved",
+  "format": "audio-driven-html",
+  "voice": {
+    "type": "generated",
+    "provider": "Google Translate TTS (provisional)",
+    "fallback": "human or ElevenLabs if the generated voice is not accepted",
+    "tone": "cálida, clara y cercana",
+    "language": "es",
+    "speed": "135-150 wpm",
+    "music": false
+  },
+  "playback": {
+    "defaultRate": 0.9,
+    "allowedRates": [
+      0.75,
+      0.9,
+      1,
+      1.25
+    ],
+    "autoplay": false,
+    "captions": true
+  },
+  "audio": {
+    "directory": "audio/contacts/",
+    "format": "mp3",
+    "sampleRate": 24000,
+    "channels": 1,
+    "bitrate": "64k",
+    "status": "generated-provisional"
+  },
+  "visual": {
+    "screenSequence": [
+      "contacts-list",
+      "contact-form",
+      "contacts-search",
+      "contacts-actions"
+    ],
+    "sampleData": {
+      "name": "Ana Pérez",
+      "email": "ana@ejemplo.com",
+      "role": "Profesor de Biodanza",
+      "search": "profesor"
+    }
+  },
+  "segments": [
+    {
+      "id": "01-intro",
+      "audio": "01-intro.mp3",
+      "estimatedSeconds": 8,
+      "scene": "contacts-list",
+      "caption": "Contactos reúne a las personas de tu práctica.",
+      "narration": "Este es el módulo Contactos. Aquí reúnes a las personas que forman parte de tu práctica de Biodanza.",
+      "onStart": [
+        "focus:.contacts-title"
+      ],
+      "durationSeconds": 8.232
+    },
+    {
+      "id": "02-personas",
+      "audio": "02-personas.mp3",
+      "estimatedSeconds": 14,
+      "scene": "contacts-list",
+      "caption": "Participantes, profesores, asistentes y colaboradores.",
+      "narration": "Puedes registrar participantes, profesores de Biodanza, asistentes, colaboradores y otras personas relacionadas con tu trabajo. Cada persona se registra una sola vez.",
+      "focus": ".contact-role",
+      "durationSeconds": 14.064
+    },
+    {
+      "id": "03-agregar",
+      "audio": "03-agregar.mp3",
+      "estimatedSeconds": 4,
+      "scene": "contacts-list",
+      "caption": "Pulsa Agregar contacto.",
+      "narration": "Para crear un contacto, pulsa Agregar contacto.",
+      "onStart": [
+        "click:#add-contact"
+      ],
+      "onEnd": [
+        "show:contact-form"
+      ],
+      "durationSeconds": 4.032
+    },
+    {
+      "id": "04-datos",
+      "audio": "04-datos.mp3",
+      "estimatedSeconds": 10,
+      "scene": "contact-form",
+      "caption": "Nombre obligatorio. Correo y teléfono opcionales.",
+      "narration": "Escribe el nombre, que es obligatorio. El correo y el teléfono son opcionales, pero te ayudan a mantener el contacto con la persona.",
+      "typing": [
+        {
+          "selector": "#contact-name",
+          "text": "Ana Pérez"
+        },
+        {
+          "selector": "#contact-email",
+          "text": "ana@ejemplo.com"
+        }
+      ],
+      "durationSeconds": 10.344
+    },
+    {
+      "id": "05-rol",
+      "audio": "05-rol.mp3",
+      "estimatedSeconds": 9,
+      "scene": "contact-form",
+      "caption": "El rol habitual es una referencia; puede cambiar en cada actividad.",
+      "narration": "Selecciona o escribe el rol habitual. Es solo una referencia. En cada actividad puedes asignarle un rol diferente.",
+      "focus": "#contact-role",
+      "typing": [
+        {
+          "selector": "#contact-role",
+          "text": "Profesor de Biodanza"
+        }
+      ],
+      "durationSeconds": 8.976
+    },
+    {
+      "id": "06-resumen-a",
+      "audio": "06-resumen-a.mp3",
+      "estimatedSeconds": 8,
+      "scene": "contact-form",
+      "caption": "Si da clases o talleres, el resumen es importante.",
+      "narration": "Puedes añadir un resumen. Si la persona va a dar clases o talleres, este resumen es importante:",
+      "focus": "#contact-summary",
+      "typing": [
+        {
+          "selector": "#contact-summary",
+          "text": "Formación y experiencia en Biodanza."
+        }
+      ],
+      "durationSeconds": 7.848
+    },
+    {
+      "id": "07-resumen-b",
+      "audio": "07-resumen-b.mp3",
+      "estimatedSeconds": 10,
+      "scene": "contact-form",
+      "caption": "Allí registras formación, experiencia y trayectoria.",
+      "narration": "Allí registras su formación, experiencia y trayectoria, y será la referencia para mostrar de dónde provienen sus conocimientos.",
+      "focus": "#contact-summary",
+      "durationSeconds": 10.152
+    },
+    {
+      "id": "08-guardar",
+      "audio": "08-guardar.mp3",
+      "estimatedSeconds": 3,
+      "scene": "contact-form",
+      "caption": "Guarda el contacto.",
+      "narration": "Cuando termines, guarda el contacto.",
+      "onStart": [
+        "click:#save-contact"
+      ],
+      "onEnd": [
+        "show:contacts-list"
+      ],
+      "durationSeconds": 3.12
+    },
+    {
+      "id": "09-buscar",
+      "audio": "09-buscar.mp3",
+      "estimatedSeconds": 9,
+      "scene": "contacts-search",
+      "caption": "Busca por nombre, correo, teléfono o rol; filtra por rol.",
+      "narration": "Usa el buscador para encontrar por nombre, correo, teléfono o rol. También puedes filtrar la lista por rol.",
+      "typing": [
+        {
+          "selector": "#contact-search",
+          "text": "profesor"
+        }
+      ],
+      "focus": "#contacts-filter-search",
+      "durationSeconds": 9.048
+    },
+    {
+      "id": "10-editar",
+      "audio": "10-editar.mp3",
+      "estimatedSeconds": 9,
+      "scene": "contacts-actions",
+      "caption": "Editar; resumen y eliminar en el menú.",
+      "narration": "Para modificar los datos, pulsa Editar. En el menú de tres puntos puedes ver el resumen o eliminar el contacto.",
+      "focus": "#edit-contact-action",
+      "durationSeconds": 9.048
+    },
+    {
+      "id": "11-cierre",
+      "audio": "11-cierre.mp3",
+      "estimatedSeconds": 6,
+      "scene": "contacts-list",
+      "caption": "Contactos: la base para actividades, grupos y certificados.",
+      "narration": "Contactos es la base para organizar actividades, grupos y certificados.",
+      "durationSeconds": 5.856
+    }
+  ],
+  "completionCaption": "Contactos: la base para actividades, grupos y certificados.",
+  "totalDurationSeconds": 90.72,
+  "totalAtDefaultRateSeconds": 100.8,
+  "decisions": [
+    "El rol habitual es una referencia, no un rol fijo.",
+    "El resumen es importante para profesores y talleristas: formación, experiencia y trayectoria.",
+    "Correo y teléfono son opcionales.",
+    "La voz generada es provisional.",
+    "Velocidad inicial: 0.9×."
+  ]
+}
