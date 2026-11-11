@@ -21,6 +21,7 @@
   audio.preservesPitch = true;
 
   let manifest = null;
+  let audioDirectory = 'audio/registration/';
   let index = 0;
   let completedSeconds = 0;
   let playing = false;
@@ -129,7 +130,12 @@
     index += 1;
     if (index >= manifest.segments.length) {
       playing = false;
-      setCaption('Registro completo. Ya puedes entrar a tus módulos.');
+      const last = manifest.segments[manifest.segments.length - 1];
+      setCaption(
+        manifest.completionCaption ||
+          (last && last.caption) ||
+          'Animación completada.',
+      );
       if (replay) replay.hidden = false;
       return;
     }
@@ -154,7 +160,7 @@
     const segment = manifest.segments[index];
     if (!segment) return;
     setSegment(segment);
-    audio.src = `audio/registration/${segment.audio}`;
+    audio.src = `${audioDirectory}${segment.audio}`;
     audio.playbackRate = rate;
     const promise = audio.play();
     if (promise && typeof promise.catch === 'function') {
@@ -185,7 +191,10 @@
       })
       .then(data => {
         manifest = data;
-        screen('signup');
+        audioDirectory = String(
+          (data.audio && data.audio.directory) || 'audio/registration/',
+        ).replace(/\/?$/, '/');
+        screen((data.segments && data.segments[0] && data.segments[0].scene) || 'signup');
         setCaption('Pulsa reproducir para ver la animación con audio.');
         if (playButton) playButton.disabled = false;
       })
