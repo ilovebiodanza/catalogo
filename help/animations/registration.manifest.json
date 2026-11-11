@@ -1,0 +1,211 @@
+{
+  "id": "registration",
+  "version": 1,
+  "language": "es",
+  "title": "Cómo registrarte",
+  "status": "script-validated",
+  "format": "audio-driven-html",
+  "voice": {
+    "type": "generated",
+    "fallback": "human if generated voice is not accepted",
+    "tone": "cálida, clara y cercana",
+    "language": "es",
+    "speed": "135-150 wpm",
+    "music": false,
+    "pronunciation": {
+      "Yo❤Biodanza": "Yo amo Biodanza",
+      "IBFed": "i-be-fed",
+      "IBF": "i-be-efe"
+    }
+  },
+  "playback": {
+    "defaultRate": 0.9,
+    "allowedRates": [
+      0.75,
+      0.9,
+      1,
+      1.25
+    ],
+    "autoplay": false,
+    "captions": true
+  },
+  "audio": {
+    "directory": "audio/registration/",
+    "format": "mp3",
+    "sampleRate": 44100,
+    "channels": 1,
+    "bitrate": "128k",
+    "status": "generated"
+  },
+  "visual": {
+    "screenSequence": [
+      "signup",
+      "signin-pending",
+      "email-confirmation",
+      "signin-confirmed",
+      "home"
+    ],
+    "sampleData": {
+      "ibfed": "BARQ 2262",
+      "name": "Ana Pérez",
+      "email": "ana@ejemplo.com",
+      "phone": ""
+    }
+  },
+  "segments": [
+    {
+      "id": "01-intro",
+      "audio": "01-intro.mp3",
+      "estimatedSeconds": 5,
+      "scene": "signup",
+      "caption": "Crea tu cuenta con tu código IBFed y un correo válido.",
+      "narration": "Para crear tu cuenta en Yo amo Biodanza, necesitas tu código IBFed y un correo electrónico válido.",
+      "onStart": [
+        "show:signup"
+      ],
+      "durationSeconds": 7.079
+    },
+    {
+      "id": "02-ibfed",
+      "audio": "02-ibfed.mp3",
+      "estimatedSeconds": 6,
+      "scene": "signup",
+      "caption": "Escribe el código que recibiste al certificarte como Profesor de Biodanza.",
+      "narration": "Empieza en el campo Código IBFed. Escribe el código que te fue asignado cuando te certificaste como Profesor de Biodanza. Para poder registrarte en esta aplicación debes estar certificado por la IBFed.",
+      "focus": "#ibfed",
+      "onStart": [
+        "focus:#ibfed"
+      ],
+      "type": {
+        "selector": "#ibfed",
+        "text": "BARQ 2262"
+      },
+      "durationSeconds": 13.557
+    },
+    {
+      "id": "03-datos",
+      "audio": "03-datos.mp3",
+      "estimatedSeconds": 8,
+      "scene": "signup",
+      "caption": "Completa nombre y correo. El teléfono es opcional.",
+      "narration": "Completa tu nombre y tu correo electrónico. El teléfono es opcional. Usa un correo que revises con frecuencia, porque allí recibirás la confirmación.",
+      "focus": "#name",
+      "typing": [
+        {
+          "selector": "#name",
+          "text": "Ana Pérez"
+        },
+        {
+          "selector": "#email",
+          "text": "ana@ejemplo.com"
+        }
+      ],
+      "durationSeconds": 9.795
+    },
+    {
+      "id": "04-password",
+      "audio": "04-password.mp3",
+      "estimatedSeconds": 8,
+      "scene": "signup",
+      "caption": "Crea y confirma una contraseña segura.",
+      "narration": "Crea una contraseña de al menos ocho caracteres, con mayúscula, minúscula, número y símbolo. Luego escríbela de nuevo para confirmarla.",
+      "focus": "#password",
+      "typing": [
+        {
+          "selector": "#password",
+          "text": "••••••••"
+        },
+        {
+          "selector": "#confirmPassword",
+          "text": "••••••••"
+        }
+      ],
+      "durationSeconds": 9.952
+    },
+    {
+      "id": "05-enviar",
+      "audio": "05-enviar.mp3",
+      "estimatedSeconds": 7,
+      "scene": "signup",
+      "caption": "Revisa tu correo para confirmar el registro. Tienes 30 minutos.",
+      "narration": "Al pulsar Crear cuenta, revisa tu correo para confirmar el registro. Tienes treinta minutos.",
+      "onStart": [
+        "click:#createAccount"
+      ],
+      "onEnd": [
+        "show:signin-pending"
+      ],
+      "durationSeconds": 6.608,
+      "holdAfterSeconds": 1.8
+    },
+    {
+      "id": "06-email",
+      "audio": "06-email.mp3",
+      "estimatedSeconds": 7,
+      "scene": "email-confirmation",
+      "caption": "Abre el enlace de confirmación de tu correo.",
+      "narration": "Abre el mensaje de confirmación y pulsa el enlace. Ese enlace verifica tu correo y activa tu cuenta.",
+      "onStart": [
+        "show:email-confirmation"
+      ],
+      "focus": "#confirm-link",
+      "onEnd": [
+        "click:#confirm-link"
+      ],
+      "durationSeconds": 7.157,
+      "holdAfterSeconds": 1.2
+    },
+    {
+      "id": "07-ingresar",
+      "audio": "07-ingresar.mp3",
+      "estimatedSeconds": 6,
+      "scene": "signin-confirmed",
+      "caption": "Vuelve a Ingresar con tu correo y contraseña.",
+      "narration": "Cuando el correo esté confirmado, vuelve a Ingresar. Escribe tu correo y tu contraseña.",
+      "onStart": [
+        "show:signin-confirmed"
+      ],
+      "focus": "#signin-email",
+      "typing": [
+        {
+          "selector": "#signin-email",
+          "text": "ana@ejemplo.com"
+        },
+        {
+          "selector": "#signin-password",
+          "text": "••••••••"
+        }
+      ],
+      "durationSeconds": 5.877
+    },
+    {
+      "id": "08-cierre",
+      "audio": "08-cierre.mp3",
+      "estimatedSeconds": 5,
+      "scene": "home",
+      "caption": "Ya puedes entrar a tus módulos.",
+      "narration": "Ya estás dentro de Yo amo Biodanza. Desde Inicio puedes entrar a Clases, Música o Actividades.",
+      "onStart": [
+        "show:home"
+      ],
+      "durationSeconds": 7.627
+    }
+  ],
+  "realFlow": [
+    "El formulario incluye IBFed, nombre, correo, teléfono opcional, contraseña y confirmación.",
+    "Al registrarse correctamente, se redirige a /users/signin con un aviso de confirmación por correo.",
+    "El enlace del correo confirma la cuenta.",
+    "Después de confirmar, el usuario inicia sesión."
+  ],
+  "decisions": [
+    "El teléfono es opcional.",
+    "El enlace de confirmación vence a los 30 minutos.",
+    "No se muestra el enlace de Términos y Privacidad.",
+    "La primera voz será generada; se evalúa voz humana como alternativa.",
+    "Velocidad inicial: 0.9×.",
+    "Yo❤Biodanza se pronuncia 'Yo amo Biodanza'."
+  ],
+  "totalEstimatedSeconds": 52,
+  "totalDurationSeconds": 67.652,
+  "totalAtDefaultRateSeconds": 75.169
+}
