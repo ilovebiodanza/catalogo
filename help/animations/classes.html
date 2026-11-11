@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ayuda visual · Crear una clase</title>
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <div class="demo-page">
+    <header class="demo-topbar">
+      <a class="demo-brand" href="https://ilovebiodanza.top/">Yo<span class="heart">❤</span>Biodanza</a>
+      <span class="demo-topbar-note">Prototipo · contenido por validar</span>
+      <a class="demo-back" href="index.html">← Todas las animaciones</a>
+    </header>
+
+    <main class="demo-grid">
+      <aside class="demo-intro">
+        <span class="demo-kicker">Animación 02</span>
+        <h1>Crear una clase</h1>
+        <p>Crear una clase nueva, nombrarla y agregar música del repertorio.</p>
+        <ol class="demo-steps">
+          <li><span class="demo-step-number">1</span><span>Abre <strong>Nueva clase</strong>.</span></li>
+          <li><span class="demo-step-number">2</span><span>Escribe el nombre y agrega músicas.</span></li>
+          <li><span class="demo-step-number">3</span><span>Guarda la clase para usarla después.</span></li>
+        </ol>
+        <a class="demo-back" href="index.html">Volver a la galería</a>
+      </aside>
+
+      <div class="demo-stage-wrap">
+        <section class="demo-stage" data-demo data-speed="0.9" data-duration="10000" aria-label="Animación para crear una clase">
+          <div class="demo-browser">
+            <div class="demo-browser-bar">
+              <span class="demo-dot"></span><span class="demo-dot"></span><span class="demo-dot"></span>
+              <span class="demo-url">ilovebiodanza.app / clases</span>
+            </div>
+            <div class="demo-app">
+              <div class="demo-app-nav">
+                <span class="demo-app-brand">Yo<span class="heart">❤</span>Biodanza</span>
+                <span class="demo-app-nav-right">Clases <span class="demo-avatar">AP</span></span>
+              </div>
+              <div class="demo-content">
+                <div class="demo-screen is-active" data-screen="list">
+                  <div class="demo-top-actions">
+                    <div>
+                      <h2 class="demo-heading">Clases</h2>
+                      <p class="demo-subheading">Organiza y reutiliza tus secuencias.</p>
+                    </div>
+                    <button class="demo-button" id="new-class" type="button">+ Nueva clase</button>
+                  </div>
+                  <div class="demo-list">
+                    <div class="demo-list-row"><span class="demo-list-icon">V</span><span><span class="demo-list-title">Vivencia de apertura</span><span class="demo-list-sub">12 músicas · 1 h 15 min</span></span><span class="demo-status">Lista</span></div>
+                    <div class="demo-list-row"><span class="demo-list-icon">R</span><span><span class="demo-list-title">Ronda de encuentro</span><span class="demo-list-sub">8 músicas · 50 min</span></span><span class="demo-status">Lista</span></div>
+                    <div class="demo-list-row"><span class="demo-list-icon">T</span><span><span class="demo-list-title">Taller de otoño</span><span class="demo-list-sub">16 músicas · 2 h</span></span><span class="demo-status">Lista</span></div>
+                  </div>
+                </div>
+
+                <div class="demo-screen" data-screen="editor">
+                  <div class="demo-top-actions">
+                    <div>
+                      <h2 class="demo-heading">Nueva clase</h2>
+                      <p class="demo-subheading">Ponle un nombre y elige la música.</p>
+                    </div>
+                    <button class="demo-button" id="save-class" type="button">Guardar clase</button>
+                  </div>
+                  <div class="demo-editor">
+                    <div class="demo-editor-main">
+                      <div class="demo-field">
+                        <span class="demo-label">Nombre de la clase</span>
+                        <div class="demo-input"><span class="demo-value" id="class-title" data-typed data-placeholder="Vivencia de apertura"></span><span class="demo-caret"></span></div>
+                      </div>
+                      <div class="demo-field">
+                        <span class="demo-label">Notas</span>
+                        <div class="demo-input"><span class="demo-value" data-placeholder="Una secuencia para abrir el encuentro"></span></div>
+                      </div>
+                      <div class="demo-label">Música de la clase</div>
+                      <div class="demo-list">
+                        <div class="demo-list-row"><span class="demo-list-icon">♪</span><span><span class="demo-list-title">Ronda de iniciación</span><span class="demo-list-sub">03:53</span></span><span class="demo-status">Añadida</span></div>
+                        <div class="demo-list-row"><span class="demo-list-icon">♪</span><span><span class="demo-list-title">Danza de la gestación</span><span class="demo-list-sub">03:11</span></span><span class="demo-status">Añadida</span></div>
+                      </div>
+                    </div>
+                    <aside class="demo-editor-side">
+                      <h3>Repertorio</h3>
+                      <div class="demo-music-item" id="music1"><span>Ronda de iniciación</span><span id="music1-check" class="demo-check">✓</span></div>
+                      <div class="demo-music-item" id="music2"><span>Danza de la gestación</span><span id="music2-check" class="demo-check">✓</span></div>
+                      <div class="demo-music-item"><span>Juego estoy en tu barriga</span><span>+</span></div>
+                      <div class="demo-music-item"><span>Encuentro</span><span>+</span></div>
+                    </aside>
+                  </div>
+                </div>
+
+                <div class="demo-screen" data-screen="success">
+                  <div class="demo-success">
+                    <span class="demo-success-icon">✓</span>
+                    <h2 class="demo-heading">Clase guardada</h2>
+                    <p class="demo-subheading">La clase <strong>Vivencia de apertura</strong> ya está en tu repertorio.</p>
+                    <button class="demo-button" type="button">Ver mis clases</button>
+                  </div>
+                </div>
+
+                <div class="demo-caption" data-caption></div>
+                <div class="demo-cursor" data-cursor aria-hidden="true"></div>
+                <div class="demo-progress"><span data-progress></span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <button class="demo-replay" data-replay type="button">↻ Repetir animación</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="demo.js"></script>
+  <script>
+    const root = document.querySelector('[data-demo]');
+    HelpDemo(root, {
+      timeline: [
+        { at: 0, run: p => { p.show('list'); p.caption('Tus clases están en un solo lugar. Empieza con <strong>Nueva clase</strong>.'); p.moveTo('#new-class'); } },
+        { at: 700, run: p => { p.click('#new-class'); } },
+        { at: 1450, run: p => { p.show('editor'); p.caption('Ponle un nombre claro y añade la música que usarás.'); } },
+        { at: 1800, run: p => p.type('#class-title', 'Vivencia de apertura', 850) },
+        { at: 3000, run: p => { p.moveTo('#music1'); p.check('#music1-check'); p.caption('Selecciona las músicas del repertorio.'); } },
+        { at: 3550, run: p => { p.moveTo('#music2'); p.check('#music2-check'); } },
+        { at: 4200, run: p => { p.caption('Cuando la secuencia esté lista, guarda la clase.'); p.moveTo('#save-class'); } },
+        { at: 4800, run: p => { p.click('#save-class'); } },
+        { at: 5600, run: p => { p.show('success'); p.caption('La clase quedó guardada y estará disponible para tus próximos encuentros.'); } },
+        { at: 8500, run: p => p.caption('Clase creada. Ahora puedes reutilizarla o editarla.') }
+      ]
+    });
+  </script>
+</body>
+</html>
