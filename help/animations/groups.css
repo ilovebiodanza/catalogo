@@ -1,0 +1,325 @@
+/* Animación de Grupos */
+.groups-table {
+  overflow: hidden;
+  border: 1px solid var(--demo-line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.groups-head,
+.group-row {
+  display: grid;
+  grid-template-columns: minmax(200px, 1.35fr) 105px 145px 112px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+}
+
+.groups-head {
+  min-height: 29px;
+  background: #f7f9fa;
+  color: var(--demo-muted);
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.group-row {
+  min-height: 58px;
+  border-top: 1px solid rgba(52, 58, 64, 0.09);
+}
+
+.group-row strong,
+.group-row small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group-row strong {
+  color: var(--demo-dark);
+  font-size: 0.68rem;
+}
+
+.group-row small {
+  margin-top: 2px;
+  color: var(--demo-muted);
+  font-size: 0.57rem;
+}
+
+.group-count,
+.group-role-summary {
+  color: var(--demo-muted);
+  font-size: 0.61rem;
+}
+
+.group-role-summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.group-row.is-highlighted {
+  background: rgba(47, 164, 231, 0.07);
+}
+
+.group-form-card {
+  width: min(100%, 610px);
+}
+
+.group-members-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 9px 0 5px;
+}
+
+.group-person-list {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--demo-line);
+  border-radius: 9px;
+}
+
+.group-person-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) minmax(9rem, 13rem);
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(52, 58, 64, 0.08);
+}
+
+.group-person-row:last-child {
+  border-bottom: 0;
+}
+
+.group-person-row strong,
+.group-person-row small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group-person-row strong {
+  color: var(--demo-dark);
+  font-size: 0.65rem;
+}
+
+.group-person-row small {
+  color: var(--demo-muted);
+  font-size: 0.56rem;
+}
+
+.group-role-input {
+  width: 100%;
+  min-height: 28px;
+  padding: 3px 8px;
+  border: 1px solid var(--demo-line);
+  border-radius: 6px;
+  color: var(--demo-dark);
+  font: inherit;
+  font-size: 0.62rem;
+}
+
+.activity-demo-card {
+  width: min(100%, 620px);
+  margin: 4px auto 0;
+  padding: 17px;
+  border: 1px solid var(--demo-line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(27, 55, 72, 0.1);
+}
+
+.activity-demo-intro {
+  margin: 3px 0 11px;
+  color: var(--demo-muted);
+  font-size: 0.65rem;
+}
+
+.activity-demo-tabs {
+  display: flex;
+  gap: 4px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--demo-line);
+  color: var(--demo-muted);
+  font-size: 0.6rem;
+}
+
+.activity-demo-tabs span {
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.activity-demo-tabs span:first-child {
+  background: #f1faff;
+  color: var(--demo-primary-strong);
+  font-weight: 700;
+}
+
+.activity-demo-body {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.activity-load-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px;
+  border: 1px solid var(--demo-line);
+  border-radius: 9px;
+}
+
+.activity-load-row.is-highlighted {
+  border-color: rgba(47, 164, 231, 0.48);
+  background: #f5fcff;
+}
+
+.activity-load-row strong,
+.activity-load-row small {
+  display: block;
+}
+
+.activity-load-row strong {
+  color: var(--demo-dark);
+  font-size: 0.65rem;
+}
+
+.activity-load-row small {
+  margin-top: 2px;
+  color: var(--demo-muted);
+  font-size: 0.56rem;
+}
+
+.activity-load-row .demo-button {
+  flex: 0 0 auto;
+  min-height: 28px;
+  font-size: 0.58rem;
+}
+
+@media (max-width: 760px) {
+  .groups-head {
+    display: none;
+  }
+
+  .group-row {
+    grid-template-columns: minmax(0, 1fr) 95px;
+    gap: 4px;
+    padding: 8px 10px;
+  }
+
+  .group-count {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .group-role-summary {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .group-actions {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .group-form-card {
+    padding: 12px;
+  }
+
+  .group-person-row {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+
+  .group-person-row .group-role-input {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Formulario compacto para que quepa completo dentro del escenario. */
+.group-form-card {
+  padding: 12px 14px;
+}
+
+.group-form-card .contacts-form-head {
+  margin-bottom: 6px;
+}
+
+.group-form-card .contacts-form-grid {
+  gap: 5px 9px;
+}
+
+.group-form-card .demo-label {
+  margin-bottom: 2px;
+  font-size: 0.54rem;
+}
+
+.group-form-card .demo-input {
+  min-height: 27px;
+  font-size: 0.6rem;
+}
+
+.group-members-head {
+  margin: 5px 0 3px;
+}
+
+.group-members-head .demo-button {
+  min-height: 26px;
+  font-size: 0.57rem;
+}
+
+.group-person-row {
+  grid-template-columns: 24px minmax(0, 1fr) minmax(8.5rem, 12rem);
+  gap: 6px;
+  padding: 4px 7px;
+}
+
+.group-person-row .people-avatar {
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 0.52rem;
+}
+
+.group-person-row strong {
+  font-size: 0.61rem;
+}
+
+.group-person-row small {
+  font-size: 0.52rem;
+}
+
+.group-role-input {
+  min-height: 25px;
+  font-size: 0.58rem;
+}
+
+.group-form-card .contact-helper {
+  margin-top: 4px;
+  font-size: 0.48rem;
+}
+
+.group-form-card .contacts-form-actions {
+  margin-top: 6px;
+}
+
+.group-form-card .contacts-form-actions .demo-button {
+  min-height: 26px;
+  font-size: 0.57rem;
+}
